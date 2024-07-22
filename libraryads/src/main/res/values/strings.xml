@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AdmobeAdsLib</string>
+
+
+    <string name="AppId">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="AppOpen">ca-app-pub-3940256099942544/9257395921</string>
+    <string name="BannerGender">ca-app-pub-3940256099942544/2014213617</string>
+    <string name="NativeMain">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="InterstitialSplash">ca-app-pub-3940256099942544/1033173712</string>
+</resources>

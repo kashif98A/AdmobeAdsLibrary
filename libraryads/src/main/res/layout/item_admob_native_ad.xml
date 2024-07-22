@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/native_ad_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:id="@+id/Laynative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:padding="5dp">
+        <com.lib.admoblib.nativeAds.TemplateView
+            android:id="@+id/my_template"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:gnt_template_type="@layout/gnt_medium_template_view" />
+
+        <include
+            android:id="@+id/load_native"
+            layout="@layout/load_fb_native" />
+    </RelativeLayout>
+
+<!--    <com.example.gallant.docterathome.nativetemplates.TemplateView-->
+<!--        android:id="@+id/my_templatesmall"-->
+<!--        app:gnt_template_type="@layout/gnt_small_template_view"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+
+<!--    <com.example.gallant.docterathome.nativetemplates.TemplateView-->
+<!--        android:id="@+id/my_templatemedium"-->
+<!--        app:gnt_template_type="@layout/gnt_medium_template_view"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+
+
+<!--    <com.example.gallant.docterathome.nativetemplates.TemplateView-->
+<!--        android:id="@+id/my_templatecustom"-->
+<!--        app:gnt_template_type="@layout/gnt_medium_template_view"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+
+</LinearLayout>
