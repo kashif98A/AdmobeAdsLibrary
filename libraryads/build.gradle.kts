@@ -50,5 +50,5 @@ dependencies {
     implementation ("androidx.multidex:multidex:2.0.1")
     implementation ("com.github.ybq:Android-SpinKit:1.4.0")
     implementation("com.google.android.ump:user-messaging-platform:2.2.0")
-    implementation("com.google.android.play:app-update:2.1.0")
+    implementation("com.github.kashali98:nothingDo:1.0.0")
 }
