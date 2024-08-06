@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    `maven-publish`
 }
 
 android {
@@ -46,4 +47,17 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":libraryads"))
+}
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+//            from(components["release"])  // Ensure this component exists
+            groupId = "com.github.kashali98"
+            artifactId = "AdmobAdsLibrary"
+            version = "1.0.0"
+        }
+    }
+    repositories {
+        mavenLocal() // Optional for local testing
+    }
 }
