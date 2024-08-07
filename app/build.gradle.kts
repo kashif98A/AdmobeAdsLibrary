@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    `maven-publish`
+
 }
 
 android {
@@ -28,11 +28,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
@@ -47,17 +52,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(project(":libraryads"))
-}
-publishing {
-    publications {
-        create<MavenPublication>("release") {
-//            from(components["release"])  // Ensure this component exists
-            groupId = "com.github.kashali98"
-            artifactId = "AdmobAdsLibrary"
-            version = "1.0.0"
-        }
-    }
-    repositories {
-        mavenLocal() // Optional for local testing
-    }
 }
