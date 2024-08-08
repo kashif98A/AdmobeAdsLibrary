@@ -54,28 +54,42 @@ dependencies {
     implementation("com.google.android.play:app-update:2.1.0")
 
 }
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
+
+publishing {
+    publications {
+        create("release", MavenPublication::class) {
+            groupId = "com.github.kashali98"
+            artifactId = "libraryads"
+            version = "1.0.0"
+
+            afterEvaluate {
                 from(components["release"])
-                groupId = "com.github.kashali98"
-                artifactId = "libraryads"
-                version = "1.0.0"
-                // Ensure attributes for Java version and elements
-                pom {
-                    withXml {
-                        asNode().appendNode("dependencies").appendNode("dependency").apply {
-                            appendNode("groupId", "org.gradle")
-                            appendNode("artifactId", "gradle-api")
-                            appendNode("version", "8.4")
-                        }
-                    }
-                }
             }
-        }
-        repositories {
-            mavenLocal() // Optional for local testing
         }
     }
 }
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            create<MavenPublication>("maven") {
+//                from(components["release"])
+//                groupId = "com.github.kashali98"
+//                artifactId = "libraryads"
+//                version = "1.0.0"
+//                // Ensure attributes for Java version and elements
+//                pom {
+//                    withXml {
+//                        asNode().appendNode("dependencies").appendNode("dependency").apply {
+//                            appendNode("groupId", "org.gradle")
+//                            appendNode("artifactId", "gradle-api")
+//                            appendNode("version", "8.4")
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        repositories {
+//            mavenLocal() // Optional for local testing
+//        }
+//    }
+//}
