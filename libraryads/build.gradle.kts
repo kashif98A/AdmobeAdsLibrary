@@ -25,12 +25,12 @@ android {
         }
     }
 
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
-        }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     viewBinding {
         enable = true
@@ -57,26 +57,39 @@ dependencies {
 }
 
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                from(components["release"])
-                groupId = "com.github.kashali98"
-                artifactId = "AdmobeAdsLibrary"
-                version = "1.0.3"
-            }
-        }
-    }
-}
-
 //afterEvaluate {
 //    publishing {
 //        publications {
 //            create<MavenPublication>("maven") {
 //                from(components["release"])
 //                groupId = "com.github.kashali98"
-//                artifactId = "libraryads"
+//                artifactId = "AdmobeAdsLibrary"
+//                version = "1.0.3"
+//            }
+//        }
+//    }
+//}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.kashali98"
+            artifactId = "AdmobeAdsLibrary"
+            version = "1.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            create<MavenPublication>("maven") {
+//                from(components["release"])
+//                groupId = "com.github.kashali98"
+//                artifactId = "AdmobeAdsLibrary"
 //                version = "1.0.0"
 //                // Ensure attributes for Java version and elements
 //                pom {
