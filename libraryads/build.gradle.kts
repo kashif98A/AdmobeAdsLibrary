@@ -55,19 +55,20 @@ dependencies {
 
 }
 
-publishing {
-    publications {
-        create("release", MavenPublication::class) {
-            groupId = "com.github.kashali98"
-            artifactId = "libraryads"
-            version = "1.0.0"
 
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
                 from(components["release"])
+                groupId = "com.github.kashali98"
+                artifactId = "AdmobeAdsLibrary"
+                version = "1.0.3"
             }
         }
     }
 }
+
 //afterEvaluate {
 //    publishing {
 //        publications {
