@@ -39,12 +39,8 @@ while also offering a sample project to demonstrate its usage.
         maven(url = "https://jitpack.io")
     }
 }
-   ```
+Add the following to your `build.gradle` file in the `dependencies` section:
 
-   Add the following to your `build.gradle` file in the `dependencies` section:
-
-
-   ```Kotlin
    implementation ("com.github.kashali98:AdmobeAdsLibrary:1.0.4")
    ```
 
@@ -79,13 +75,16 @@ For displaying banner ad include following code in xml
     android:id="@+id/adaptiveBanner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
+
+Kotlin
+    var adaptiveBanner: AdaptiveBanner = findViewById(R.id.adaptiveBanner)
+    adaptiveBanner.loadAdaptiveBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
 ```
 
 Use following code to load banner ad:
 
 ```kotlin
-var adaptiveBanner: AdaptiveBanner = findViewById(R.id.adaptiveBanner)
-adaptiveBanner.loadAdaptiveBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
+
 
 // for Collapsible Banner Ad
 ```xml
@@ -95,7 +94,7 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 app:layout_constraintBottom_toBottomOf="parent"/>
         
-```kotlin
+kotlin
 
 var collapsibleBanner: CollapsibleBanner = findViewById(R.id.collapsibleBanner)
 collapsibleBanner.loadCollapsibleBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
@@ -110,9 +109,7 @@ Similarly for NativeBannerMedium, NativeLarge
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@+id/adaptiveBanner"/>
 
-```
-
-```kotlin
+kotlin
 var nativeMedium: NativeMediumAds = findViewById(R.id.nativeBannerSmall)
 nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true)
 
@@ -125,9 +122,7 @@ nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 
-```
-
-```kotlin
+kotlin
 var nativeMedium: NativeMedium = findViewById(R.id.nativeMedium)
 nativeMedium.loadNativeBannerAd(this, "ca-app-pub-3940256099942544/2247696110",true)
 ```
@@ -138,9 +133,6 @@ nativeMedium.loadNativeBannerAd(this, "ca-app-pub-3940256099942544/2247696110",t
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 
-```
-
-```kotlin
 var nativeLarge: NativeLarge = findViewById(R.id.nativeLarge)
 nativeLarge.loadNativeLarge(this, "ca-app-pub-3940256099942544/2247696110",true)
 ```
@@ -152,8 +144,13 @@ bottomSheetDialog.setContentView(com.lib.admoblib.R.layout.bottom_sheet_dialog)
 val nativeAdmob = bottomSheetDialog.findViewById<NativeLarge>(R.id.nativeLarge)
 nativeAdmob!!.loadNativeLarge(this@MainActivity,"ca-app-pub-3940256099942544/2247696110",true)
 
+kotlin
+override fun onBackPressed() {
+    super.onBackPressed()
+    showBottomSheetDialog(this,bottomSheetDialog)
+}
 ```
-```
+
 In an Activity
 To load interstitial ads can be loaded on request , use the following code."
 ```kotlin
@@ -164,14 +161,10 @@ InterAds.startLoadAdActivity(this,
 )
 ```
 
-
-
 To load interstitial ads  on Demand use following code.
 ```kotlin
   loadInterstitialAd(this@SplashActivity, "ca-app-pub-3940256099942544/1033173712")
 ```
-
-
 
 To load native ads on exit, use the following code in the onCreate method and call it accordingly.
 ```kotlin
@@ -184,10 +177,7 @@ To load native ads on exit, use the following code in the onCreate method and ca
     }
 })
 
- override fun onBackPressed() {
-        super.onBackPressed()
-     showBottomSheetDialog(this,bottomSheetDialog)
- }
+
 ```
 
 #### APP Update
