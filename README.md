@@ -30,7 +30,7 @@ while also offering a sample project to demonstrate its usage.
 
    Add it in your root build.gradle at the end of repositories:
 
-   ```Kotlin
+   //Kotlin
   	dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -53,7 +53,8 @@ Add the following to your `build.gradle` file in the `dependencies` section:
 The `AdsConsentManager` should be initialized in the first activity of your application to ensure
 that the consent form is displayed to the user as required.
 
-   ```Kotlin
+   ```
+   Kotlin
 
     class MainActivity : AppCompatActivity() {
     @Override
@@ -76,7 +77,7 @@ For displaying banner ad include following code in xml
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
-Kotlin
+    //Kotlin
     var adaptiveBanner: AdaptiveBanner = findViewById(R.id.adaptiveBanner)
     adaptiveBanner.loadAdaptiveBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
 ```
@@ -93,8 +94,8 @@ android:id="@+id/collapsibleBanner"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 app:layout_constraintBottom_toBottomOf="parent"/>
-        
-kotlin
+
+//Kotlin
 
 var collapsibleBanner: CollapsibleBanner = findViewById(R.id.collapsibleBanner)
 collapsibleBanner.loadCollapsibleBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
@@ -109,7 +110,7 @@ Similarly for NativeBannerMedium, NativeLarge
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@+id/adaptiveBanner"/>
 
-kotlin
+    //Kotlin
 var nativeMedium: NativeMediumAds = findViewById(R.id.nativeBannerSmall)
 nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true)
 
@@ -122,7 +123,7 @@ nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 
-kotlin
+    //Kotlin
 var nativeMedium: NativeMedium = findViewById(R.id.nativeMedium)
 nativeMedium.loadNativeBannerAd(this, "ca-app-pub-3940256099942544/2247696110",true)
 ```
