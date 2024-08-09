@@ -11,14 +11,15 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
-import com.lib.admobeadslib.databinding.SmellNativeLayoutBinding
+import com.lib.admoblib.databinding.NativeLayoutBinding
+
 import com.lib.admoblib.isNetworkConnected
 
 
-class NativeSmallAdmob @JvmOverloads constructor(
+class NativeLarge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    lateinit var binding: SmellNativeLayoutBinding
+    lateinit var binding: NativeLayoutBinding
     private lateinit var nativetemplate: TemplateView
     private lateinit var NativeShimmer: ShimmerFrameLayout
     private lateinit var Laynative: RelativeLayout
@@ -29,13 +30,13 @@ class NativeSmallAdmob @JvmOverloads constructor(
 
     private fun initAdmob() {
         val inflater = LayoutInflater.from(context)
-        binding = SmellNativeLayoutBinding.inflate(inflater, this, true)
+        binding = NativeLayoutBinding.inflate(inflater, this, true)
         nativetemplate = binding.myTemplate
         NativeShimmer = binding.footer.shimmerContainerNative
         Laynative = binding.Laynative
     }
 
-    fun loadNativeAD(
+    fun loadNativeLarge(
         activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (context.isNetworkConnected()) {

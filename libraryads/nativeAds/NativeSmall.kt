@@ -1,6 +1,5 @@
 package com.lib.admoblib.nativeAds
 
-import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -12,12 +11,11 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
-import com.lib.admoblib.databinding.SmellNativeLayoutBinding
+import com.lib.admobeadslib.databinding.SmellNativeLayoutBinding
 import com.lib.admoblib.isNetworkConnected
-import com.lib.admoblib.utiliz.Tools
 
 
-class NativeSmallAdmob @JvmOverloads constructor(
+class NativeSmall @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     lateinit var binding: SmellNativeLayoutBinding
@@ -38,12 +36,11 @@ class NativeSmallAdmob @JvmOverloads constructor(
     }
 
     fun loadNativeAD(
-        activity: Activity, admobNativeIds: String, status: Boolean
+        activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (context.isNetworkConnected()) {
             when {
                 status -> {
-                    Tools.hideNavigationBar(activity)
                     val adLoader =
                         AdLoader.Builder(activity, admobNativeIds).forNativeAd { nativeAd ->
                             val styles = NativeTemplateStyle.Builder().build()
@@ -70,7 +67,6 @@ class NativeSmallAdmob @JvmOverloads constructor(
                 }
 
                 else -> {
-                    Tools.showNavigationBar(activity)
                     Laynative.visibility = View.GONE
                 }
             }

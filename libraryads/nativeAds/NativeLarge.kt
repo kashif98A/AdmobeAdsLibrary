@@ -11,12 +11,11 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
-import com.lib.admoblib.databinding.NativeLayoutBinding
-
+import com.lib.admobeadslib.databinding.NativeLayoutBinding
 import com.lib.admoblib.isNetworkConnected
 
 
-class NativeLargeAdmob @JvmOverloads constructor(
+class NativeLarge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     lateinit var binding: NativeLayoutBinding

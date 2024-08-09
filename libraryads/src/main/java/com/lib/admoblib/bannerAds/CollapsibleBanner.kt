@@ -17,11 +17,12 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
-import com.lib.admobeadslib.databinding.AdmobBannerLayoutBinding
+import com.lib.admoblib.databinding.AdmobBannerLayoutBinding
 import com.lib.admoblib.isNetworkConnected
+import com.lib.admoblib.utiliz.Tools
 
 
-class ColllaspAdmobBanner @JvmOverloads constructor(
+class CollapsibleBanner @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     lateinit var binding: AdmobBannerLayoutBinding
@@ -42,7 +43,7 @@ class ColllaspAdmobBanner @JvmOverloads constructor(
     }
 
     //
-    fun loadBannerCollasibile(
+    fun loadCollapsibleBanner(
         context: Activity,
         bannerId: String,
         status: Boolean,
@@ -50,6 +51,7 @@ class ColllaspAdmobBanner @JvmOverloads constructor(
         if (context.isNetworkConnected()) {
             when {
                 status -> {
+                    Tools.hideNavigationBar(context)
                     val adView = AdView(context)
                     adContainerView?.visibility = View.VISIBLE
                     adContainerView?.removeAllViews()
@@ -93,6 +95,7 @@ class ColllaspAdmobBanner @JvmOverloads constructor(
                 }
 
                 else -> {
+                    Tools.showNavigationBar(context)
                     laybanner?.visibility = View.GONE
                 }
             }

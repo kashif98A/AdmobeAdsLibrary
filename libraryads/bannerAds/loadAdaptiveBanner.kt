@@ -11,12 +11,11 @@ import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.ads.*
-import com.lib.admoblib.databinding.AdmobBannerLayoutBinding
+import com.lib.admobeadslib.databinding.AdmobBannerLayoutBinding
 import com.lib.admoblib.isNetworkConnected
-import com.lib.admoblib.utiliz.Tools
 
 
-class AdmobBanner @JvmOverloads constructor(
+class loadAdaptiveBanner @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -40,7 +39,6 @@ class AdmobBanner @JvmOverloads constructor(
         if (context.isNetworkConnected()) {
             when {
                 status -> {
-                    Tools.hideNavigationBar(activity)
                 val adView = AdView(activity)
                 adView.adUnitId = bannerId
                 adContainerView?.removeAllViews()
@@ -65,7 +63,6 @@ class AdmobBanner @JvmOverloads constructor(
                 }
             }     else -> {
                 laybanner?.visibility = View.GONE
-                Tools.showNavigationBar(activity)
             }
         }
         }else {

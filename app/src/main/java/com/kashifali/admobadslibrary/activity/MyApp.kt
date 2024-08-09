@@ -1,10 +1,9 @@
-package com.lib.admoblib.activity
+package com.kashifali.admobadslibrary.activity
 
 import android.app.Application
 import android.util.Log
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
-import com.lib.admobeadslib.R
+import com.kashifali.admobadslibrary.R
+
 import com.lib.admoblib.AppOpenManager
 
 class MyApp:Application() {
@@ -14,7 +13,7 @@ class MyApp:Application() {
     }
 
     private fun initializeMobileAdsSdk() {
-        MobileAds.initialize(this) {}
-        AppOpenManager(this, R.string.AppOpen)
+//        MobileAds.initialize(this) {}
+//        AppOpenManager(this, R.string.AppOpen)
     }
 }
