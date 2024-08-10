@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <com.lib.admoblib.nativeAds.NativeLarge
-            android:id="@+id/nativeAdmob"
+            android:id="@+id/nativeLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/btnInter" />

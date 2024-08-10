@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(com.lib.admoblib.R.layout.bottom_sheet_dialog)
         val nativeAdmob = bottomSheetDialog.findViewById<NativeLarge>(R.id.nativeLarge)
-        nativeAdmob!!.loadNativeLarge(this@MainActivity,getString(R.string.NativeMain),false)
+        nativeAdmob!!.loadNativeLarge(this@MainActivity,getString(R.string.NativeMain),true)
 
     }
 

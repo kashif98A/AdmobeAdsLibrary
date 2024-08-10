@@ -40,7 +40,7 @@ while also offering a sample project to demonstrate its usage.
     }
 }
 Add the following to your `build.gradle` file in the `dependencies` section:
-
+ ```
    implementation ("com.github.kashali98:AdmobeAdsLibrary:1.0.4")
    ```
 
