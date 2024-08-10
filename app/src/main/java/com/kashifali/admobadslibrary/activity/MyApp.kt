@@ -9,11 +9,6 @@ import com.lib.admoblib.AppOpenManager
 class MyApp:Application() {
     override fun onCreate() {
         super.onCreate()
-        initializeMobileAdsSdk()
-    }
-
-    private fun initializeMobileAdsSdk() {
-//        MobileAds.initialize(this) {}
-//        AppOpenManager(this, R.string.AppOpen)
+        AppOpenManager(this, this.getString(R.string.AppOpen))
     }
 }

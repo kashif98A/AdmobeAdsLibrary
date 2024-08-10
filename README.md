@@ -28,9 +28,9 @@ while also offering a sample project to demonstrate its usage.
 
 1. **Add the library to your project**:
 
-   Add it in your root build.gradle at the end of repositories:
+   Add it in your root setting.gradle at the end of repositories:
 
-   //Kotlin
+    ```Kotlin
   	dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -38,9 +38,10 @@ while also offering a sample project to demonstrate its usage.
         mavenCentral()
         maven(url = "https://jitpack.io")
     }
-}
+   }
+    ```
 Add the following to your `build.gradle` file in the `dependencies` section:
- ```
+ ```Kotlin
    implementation ("com.github.kashali98:AdmobeAdsLibrary:1.0.4")
    ```
 
@@ -53,8 +54,7 @@ Add the following to your `build.gradle` file in the `dependencies` section:
 The `AdsConsentManager` should be initialized in the first activity of your application to ensure
 that the consent form is displayed to the user as required.
 
-   ```
-   Kotlin
+   ```Kotlin
 
     class MainActivity : AppCompatActivity() {
     @Override
@@ -64,7 +64,7 @@ that the consent form is displayed to the user as required.
         requestconsentfome(this)
     }
 }
-```
+  ```
 
 #### Managing AdMob Ads
 
@@ -77,10 +77,10 @@ For displaying banner ad include following code in xml
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
-    //Kotlin
+    
     var adaptiveBanner: AdaptiveBanner = findViewById(R.id.adaptiveBanner)
     adaptiveBanner.loadAdaptiveBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
-```
+ ```
 
 Use following code to load banner ad:
 
@@ -88,18 +88,17 @@ Use following code to load banner ad:
 
 
 // for Collapsible Banner Ad
-```xml
+ ```xml
 <com.lib.admoblib.bannerAds.CollapsibleBanner
 android:id="@+id/collapsibleBanner"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 app:layout_constraintBottom_toBottomOf="parent"/>
-
-//Kotlin
+        
 
 var collapsibleBanner: CollapsibleBanner = findViewById(R.id.collapsibleBanner)
 collapsibleBanner.loadCollapsibleBanner(this, "ca-app-pub-3940256099942544/6300978111", true)
-```
+ ```
 
 Similarly for NativeBannerMedium, NativeLarge
 
@@ -110,7 +109,7 @@ Similarly for NativeBannerMedium, NativeLarge
     android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@+id/adaptiveBanner"/>
 
-    //Kotlin
+
 var nativeMedium: NativeMediumAds = findViewById(R.id.nativeBannerSmall)
 nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true)
 
@@ -123,7 +122,7 @@ nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 
-    //Kotlin
+
 var nativeMedium: NativeMedium = findViewById(R.id.nativeMedium)
 nativeMedium.loadNativeBannerAd(this, "ca-app-pub-3940256099942544/2247696110",true)
 ```
@@ -177,6 +176,19 @@ To load native ads on exit, use the following code in the onCreate method and ca
         startActivity(intent)
     }
 })
+
+
+```
+AppOpen Splash & onResum
+```kotlin
+
+class MyApp:Application() {
+    override fun onCreate() {
+        super.onCreate()
+        AppOpenManager(this, R.string.AppOpen)
+    }
+}
+
 
 
 ```

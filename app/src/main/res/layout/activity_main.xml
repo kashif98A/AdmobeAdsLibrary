@@ -31,7 +31,7 @@
         android:id="@+id/nativeMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/adaptiveBanner"/>
+        app:layout_constraintTop_toBottomOf="@+id/nativeLarge"/>
 
     <com.lib.admoblib.bannerAds.AdaptiveBanner
         android:id="@+id/adaptiveBanner"

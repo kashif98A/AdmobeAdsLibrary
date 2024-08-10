@@ -17,7 +17,7 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.collapsibleBanner.loadCollapsibleBanner(this,getString(R.string.BannerGender),false)
+        binding.collapsibleBanner.loadCollapsibleBanner(this,getString(R.string.BannerGender),true)
 
     }
 }

@@ -54,22 +54,15 @@ dependencies {
     implementation ("com.github.ybq:Android-SpinKit:1.4.0")
     implementation(libs.user.messaging.platform)
     implementation(libs.app.update)
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
-    implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-config")
-    implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
 }
 
 
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.github.kashifali23"
+            groupId = "com.github.kashif98A"
             artifactId = "AdmobeAdsLibrary"
-            version = "1.0"
+            version = "1.0.0"
 
             afterEvaluate {
                 from(components["release"])
