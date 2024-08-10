@@ -219,7 +219,7 @@ manage ads, purchases, and user consent. Follow these steps to run the sample pr
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/kashali98/AdmobeAdsLibrary.git
+   git clone https://github.com/kashif98A/AdmobeAdsLibrary.git
    ```
 
 2. Open the sample project in Android Studio.
