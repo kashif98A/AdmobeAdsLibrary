@@ -24,7 +24,7 @@ object InterAdsReplaceFragment {
                     if (ConstantAds.currentTime - ConstantAds.lastClickTime > 8000) {
                         ConstantAds.lastClickTime = ConstantAds.currentTime
                         ConstantAds.interstitialid = idAds
-                        val mIntent = Intent(context, LoadAdsFragment::class.java)
+                        val mIntent = Intent(context, LoadAdsReplaceFragment::class.java)
                         mIntent.putExtra("actionid", actionid)
                         mIntent.putExtra("mBundle", mBundle)
                         context.startActivity(mIntent)
