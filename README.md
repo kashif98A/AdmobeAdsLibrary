@@ -110,7 +110,7 @@ Similarly for NativeBannerMedium, NativeLarge
 />
 
 
-var nativeMedium: NativeMediumAds = findViewById(R.id.nativeBannerSmall)
+var nativeMedium: NativeMediumAds = findViewById(R.id.nativeMedium)
 nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true)
 
 ```
@@ -128,12 +128,13 @@ nativeLarge.loadNativeLarge(this, "ca-app-pub-3940256099942544/2247696110",true)
 
 
 ```kotlin
-    bottomSheetDialog = BottomSheetDialog(this)
+//call on OncreatMethod
+ val  bottomSheetDialog = BottomSheetDialog(this)
 bottomSheetDialog.setContentView(com.lib.admoblib.R.layout.bottom_sheet_dialog)
 val nativeAdmob = bottomSheetDialog.findViewById<NativeLarge>(R.id.nativeLarge)
 nativeAdmob!!.loadNativeLarge(this@MainActivity,"ca-app-pub-3940256099942544/2247696110",true)
 
-kotlin
+
 override fun onBackPressed() {
     super.onBackPressed()
     showBottomSheetDialog(this,bottomSheetDialog)
