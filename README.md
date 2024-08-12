@@ -104,10 +104,10 @@ Similarly for NativeBannerMedium, NativeLarge
 
 ```xml
     <com.lib.admoblib.nativeAds.NativeMedium
-    android:id="@+id/nativeSmall"
+    android:id="@+id/nativeMedium"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="@+id/adaptiveBanner"/>
+/>
 
 
 var nativeMedium: NativeMediumAds = findViewById(R.id.nativeBannerSmall)
@@ -115,17 +115,6 @@ nativeMedium.loadNativeMedium(this,"ca-app-pub-3940256099942544/2247696110",true
 
 ```
 
-```xml
-
-<com.lib.admoblib.nativeAds.NativeMedium
-    android:id="@+id/nativeMedium"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
-
-
-var nativeMedium: NativeMedium = findViewById(R.id.nativeMedium)
-nativeMedium.loadNativeBannerAd(this, "ca-app-pub-3940256099942544/2247696110",true)
-```
 
 ```xml
  <com.lib.admoblib.nativeAds.NativeLarge
