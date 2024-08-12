@@ -154,10 +154,7 @@ InterAds.startLoadAdActivity(this,
 To load interstitial ads  on Demand use following code.
 ```kotlin
   loadInterstitialAd(this@SplashActivity, "ca-app-pub-3940256099942544/1033173712")
-```
 
-To load native ads on exit, use the following code in the onCreate method and call it accordingly.
-```kotlin
 
  binding.NextButton.setOnClickListener(View.OnClickListener {
      ///show Here
