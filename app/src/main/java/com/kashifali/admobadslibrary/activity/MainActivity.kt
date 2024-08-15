@@ -1,7 +1,9 @@
 package com.kashifali.admobadslibrary.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -9,9 +11,11 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kashifali.admobadslibrary.R
 import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
+import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.IntertialAds.InterAds
 import com.lib.admoblib.IntertialAds.InterAdsFragment
 import com.lib.admoblib.IntertialAds.LoadAdsFragment
+import com.lib.admoblib.bannerAds.AdaptiveBanner
 import com.lib.admoblib.nativeAds.NativeLarge
 import com.lib.admoblib.showBottomSheetDialog
 
@@ -36,7 +40,21 @@ class MainActivity : AppCompatActivity() {
               123,false
             )
         })
+        binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                Log.d("checkAdsLoads", " native onAdLoaded: ")
+            }
+        })
+        binding.adaptiveBanner.bannerAdsCallback(object : AdsCallBack{
+            override fun onAdLoaded() {
+                Log.d("checkAdsLoads", "onAdLoaded: ")
+            }
 
+//            override fun onFailedToLoad(error: com.google.android.gms.ads.AdError?) {
+//                super.onFailedToLoad(error)
+//            }
+        })
         ///for frammnet
 //        binding.btnInter1.setOnClickListener(View.OnClickListener {
 //            InterAdsFragment.startLoadAdFagment(
@@ -67,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         nativeAdmob!!.loadNativeLarge(this@MainActivity,getString(R.string.NativeMain),true)
 
     }
+
 
     override fun onBackPressed() {
 //        super.onBackPressed()

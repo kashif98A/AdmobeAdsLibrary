@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.ads.*
+import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.databinding.AdmobBannerLayoutBinding
 import com.lib.admoblib.isNetworkConnected
 import com.lib.admoblib.utiliz.Tools
@@ -25,7 +26,7 @@ class AdaptiveBanner @JvmOverloads constructor(
     private var adContainerView: FrameLayout? = null
     private var footer: ShimmerFrameLayout? = null
     private var laybanner: RelativeLayout? = null
-
+    var adscallback: AdsCallBack? = null
     init {
         initAdmob()
     }
@@ -55,12 +56,14 @@ class AdaptiveBanner @JvmOverloads constructor(
                         footer?.visibility = View.GONE
                         footer?.stopShimmer()
                         adContainerView?.visibility = View.VISIBLE
+                        adscallback?.onAdLoaded()
                     }
 
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         super.onAdFailedToLoad(loadAdError)
                         footer?.visibility = View.GONE
                         adContainerView?.visibility = View.GONE
+                        adscallback?.onFailedToLoad(loadAdError)
                     }
                 }
             }     else -> {
@@ -87,4 +90,7 @@ class AdaptiveBanner @JvmOverloads constructor(
     }
 
 
+    fun  bannerAdsCallback(callback: AdsCallBack?) {
+        adscallback = callback
+    }
 }

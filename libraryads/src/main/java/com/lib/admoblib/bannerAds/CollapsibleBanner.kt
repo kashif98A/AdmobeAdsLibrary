@@ -17,6 +17,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.databinding.AdmobBannerLayoutBinding
 import com.lib.admoblib.isNetworkConnected
 import com.lib.admoblib.utiliz.Tools
@@ -29,7 +30,7 @@ class CollapsibleBanner @JvmOverloads constructor(
     private var adContainerView: FrameLayout? = null
     private var footer: ShimmerFrameLayout? = null
     private var laybanner: RelativeLayout? = null
-
+    var adscallback: AdsCallBack? = null
     init {
         initAdmob()
     }
@@ -77,11 +78,13 @@ class CollapsibleBanner @JvmOverloads constructor(
                             super.onAdLoaded()
                             //findViewById(R.id.include).setVisibility(View.INVISIBLE);
                             footer?.visibility = View.GONE
+                            adscallback?.onAdLoaded()
                         }
 
                         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                             super.onAdFailedToLoad(loadAdError)
                             footer?.visibility = View.GONE
+                            adscallback?.onFailedToLoad(loadAdError)
                         }
                     }
 
@@ -117,5 +120,7 @@ class CollapsibleBanner @JvmOverloads constructor(
         val adWidth = (adWidthPixels / density).toInt()
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth)
     }
-
+    fun  bannerAdsCallback(callback: AdsCallBack?) {
+        adscallback = callback
+    }
 }

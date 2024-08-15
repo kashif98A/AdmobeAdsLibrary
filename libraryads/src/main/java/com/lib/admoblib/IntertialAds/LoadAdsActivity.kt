@@ -95,7 +95,7 @@ class LoadAdsActivity : AppCompatActivity() {
         val mIntent = Intent(this@LoadAdsActivity, Class.forName(nextActivity))
         mIntent.putExtra(ConstantAds.position, intent.getIntExtra(ConstantAds.position, 0))
         mIntent.putExtra(ConstantAds.KeyOne, intent.getStringExtra(ConstantAds.KeyOne))
-        mIntent.putExtra(ConstantAds.KeyTwo, intent.getStringExtra(ConstantAds.KeyTwo))
+        mIntent.putExtra(ConstantAds.KeyTwo, intent.getIntExtra(ConstantAds.KeyTwo,0))
         mIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(mIntent)
     }

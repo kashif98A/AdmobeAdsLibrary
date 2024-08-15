@@ -11,6 +11,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.databinding.NativeLayoutBinding
 
 import com.lib.admoblib.isNetworkConnected
@@ -23,7 +24,7 @@ class NativeLarge @JvmOverloads constructor(
     private lateinit var nativetemplate: TemplateView
     private lateinit var NativeShimmer: ShimmerFrameLayout
     private lateinit var Laynative: RelativeLayout
-
+    var adscallback: AdsCallBack? = null
     init {
         initAdmob()
     }
@@ -54,6 +55,7 @@ class NativeLarge @JvmOverloads constructor(
                                 Laynative.visibility = View.GONE
                                 NativeShimmer.visibility = View.GONE
                                 super.onAdFailedToLoad(loadAdError)
+                                adscallback?.onFailedToLoad(loadAdError)
                             }
 
                             override fun onAdLoaded() {
@@ -61,6 +63,7 @@ class NativeLarge @JvmOverloads constructor(
                                 NativeShimmer.visibility = View.GONE
                                 nativetemplate.visibility = View.VISIBLE
                                 super.onAdLoaded()
+                                adscallback?.onAdLoaded()
                             }
                         }).build()
 
@@ -75,5 +78,7 @@ class NativeLarge @JvmOverloads constructor(
             Laynative.visibility = View.GONE
         }
     }
-
+    fun  nativeAdsCallback(callback: AdsCallBack?) {
+        adscallback = callback
+    }
 }
