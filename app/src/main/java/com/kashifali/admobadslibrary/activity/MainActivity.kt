@@ -1,21 +1,17 @@
 package com.kashifali.admobadslibrary.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.ads.AdError
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kashifali.admobadslibrary.R
 import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
 import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.IntertialAds.InterAds
-import com.lib.admoblib.IntertialAds.InterAdsFragment
-import com.lib.admoblib.IntertialAds.LoadAdsFragment
-import com.lib.admoblib.bannerAds.AdaptiveBanner
 import com.lib.admoblib.nativeAds.NativeLarge
 import com.lib.admoblib.showBottomSheetDialog
 
@@ -31,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
-        binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
+        binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),false)
 
         binding.btnInter.setOnClickListener(View.OnClickListener {
             InterAds.startLoadAdActivity(this,
@@ -83,6 +79,20 @@ class MainActivity : AppCompatActivity() {
         bottomSheetDialog.setContentView(com.lib.admoblib.R.layout.bottom_sheet_dialog)
         val nativeAdmob = bottomSheetDialog.findViewById<NativeLarge>(R.id.nativeLarge)
         nativeAdmob!!.loadNativeLarge(this@MainActivity,getString(R.string.NativeMain),true)
+
+        // Set callback to navigate to SecondActivity once ad is loaded
+        binding.nativeMediumpre.nativeAdsCallback(object : AdsCallBack {
+            override fun onAdLoaded() {
+                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
+            }
+
+            override fun onFailedToLoad(error: AdError?) {
+                // Handle ad load failure
+            }
+        })
+
+        // Preload the ad
+        binding.nativeMediumpre.preloadAd(this, getString(R.string.NativeMain),true)
 
     }
 

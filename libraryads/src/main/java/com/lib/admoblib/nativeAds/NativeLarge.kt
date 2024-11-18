@@ -81,4 +81,17 @@ class NativeLarge @JvmOverloads constructor(
     fun  nativeAdsCallback(callback: AdsCallBack?) {
         adscallback = callback
     }
+
+    // Lifecycle management for the native ad view
+    fun onResume() {
+        NativeShimmer.startShimmer()
+    }
+    fun onPause() {
+        NativeShimmer.stopShimmer()
+    }
+
+    fun onDestroy() {
+        NativeShimmer.stopShimmer()
+        nativetemplate.destroyNativeAd()  // Destroying the native ad to release resources
+    }
 }

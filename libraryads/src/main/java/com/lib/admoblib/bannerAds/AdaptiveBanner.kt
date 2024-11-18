@@ -27,6 +27,8 @@ class AdaptiveBanner @JvmOverloads constructor(
     private var footer: ShimmerFrameLayout? = null
     private var laybanner: RelativeLayout? = null
     var adscallback: AdsCallBack? = null
+
+    private var adView: AdView? = null
     init {
         initAdmob()
     }
@@ -42,15 +44,15 @@ class AdaptiveBanner @JvmOverloads constructor(
             when {
                 status -> {
                     Tools.hideNavigationBar(activity)
-                val adView = AdView(activity)
-                adView.adUnitId = bannerId
+                 adView = AdView(activity)
+                adView?.adUnitId = bannerId
                 adContainerView?.removeAllViews()
                 adContainerView?.addView(adView)
                 val adSize: AdSize = getAdSize(activity, adContainerView!!)
-                adView.setAdSize(adSize)
+                adView?.setAdSize(adSize)
                 val adRequest: AdRequest = AdRequest.Builder().build()
-                adView.loadAd(adRequest)
-                adView.adListener = object : AdListener() {
+                adView?.loadAd(adRequest)
+                adView?.adListener = object : AdListener() {
                     override fun onAdLoaded() {
                         super.onAdLoaded()
                         footer?.visibility = View.GONE
@@ -93,4 +95,19 @@ class AdaptiveBanner @JvmOverloads constructor(
     fun  bannerAdsCallback(callback: AdsCallBack?) {
         adscallback = callback
     }
+
+    // Add the lifecycle methods
+    fun resumeAdView() {
+        adView?.resume()
+    }
+
+    fun pauseAdView() {
+        adView?.pause()
+    }
+
+    fun destroyAdView() {
+        adView?.destroy()
+        adView = null  // Set to null to release reference and prevent memory leaks
+    }
+
 }

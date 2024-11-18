@@ -22,7 +22,6 @@ import com.lib.admoblib.databinding.AdmobBannerLayoutBinding
 import com.lib.admoblib.isNetworkConnected
 import com.lib.admoblib.utiliz.Tools
 
-
 class CollapsibleBanner @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
@@ -31,6 +30,10 @@ class CollapsibleBanner @JvmOverloads constructor(
     private var footer: ShimmerFrameLayout? = null
     private var laybanner: RelativeLayout? = null
     var adscallback: AdsCallBack? = null
+
+    // Keep reference to AdView
+    private var adView: AdView? = null
+
     init {
         initAdmob()
     }
@@ -43,69 +46,56 @@ class CollapsibleBanner @JvmOverloads constructor(
         laybanner = binding.laybanner
     }
 
-    //
     fun loadCollapsibleBanner(
         context: Activity,
         bannerId: String,
-        status: Boolean,
+        status: Boolean
     ) {
         if (context.isNetworkConnected()) {
-            when {
-                status -> {
-                    Tools.hideNavigationBar(context)
-                    val adView = AdView(context)
-                    adContainerView?.visibility = View.VISIBLE
-                    adContainerView?.removeAllViews()
-                    val extras = Bundle()
-                    extras.putString("collapsible", "bottom")
-                    val adRequest =
-                        AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
-                            .build()
-                    adView.adUnitId = bannerId
-//            adView.loadAd(adRequest)
+            if (status) {
+                Tools.hideNavigationBar(context)
+                adView = AdView(context)
+                adContainerView?.visibility = View.VISIBLE
+                adContainerView?.removeAllViews()
 
-                    val adSize: AdSize = getAdSize(
-                        context, adContainerView!!
-                    )
-                    adView.setAdSize(adSize)
-                    adView.loadAd(adRequest)
-                    adView.adListener = object : AdListener() {
-                        override fun onAdImpression() {
-                            super.onAdImpression()
-                        }
+                val extras = Bundle()
+                extras.putString("collapsible", "bottom")
+                val adRequest = AdRequest.Builder()
+                    .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                    .build()
 
-                        override fun onAdLoaded() {
-                            super.onAdLoaded()
-                            //findViewById(R.id.include).setVisibility(View.INVISIBLE);
-                            footer?.visibility = View.GONE
-                            adscallback?.onAdLoaded()
-                        }
+                adView?.adUnitId = bannerId
+                adView?.setAdSize(getAdSize(context, adContainerView!!))
+                adView?.loadAd(adRequest)
 
-                        override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                            super.onAdFailedToLoad(loadAdError)
-                            footer?.visibility = View.GONE
-                            adscallback?.onFailedToLoad(loadAdError)
-                        }
+                adView?.adListener = object : AdListener() {
+                    override fun onAdLoaded() {
+                        super.onAdLoaded()
+                        footer?.visibility = View.GONE
+                        adscallback?.onAdLoaded()
                     }
 
-                    //adContainerView.addView(adView);
-                    val adContainerParams = RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT
-                    )
-                    adContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-                    adContainerView?.addView(adView, adContainerParams)
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        super.onAdFailedToLoad(loadAdError)
+                        footer?.visibility = View.GONE
+                        adscallback?.onFailedToLoad(loadAdError)
+                    }
                 }
 
-                else -> {
-                    Tools.showNavigationBar(context)
-                    laybanner?.visibility = View.GONE
-                }
+                val adContainerParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT
+                )
+                adContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                adContainerView?.addView(adView, adContainerParams)
+
+            } else {
+                Tools.showNavigationBar(context)
+                laybanner?.visibility = View.GONE
             }
         } else {
             laybanner?.visibility = View.GONE
         }
-
     }
 
     private fun getAdSize(activity: Activity, adContainerView: FrameLayout): AdSize {
@@ -120,7 +110,22 @@ class CollapsibleBanner @JvmOverloads constructor(
         val adWidth = (adWidthPixels / density).toInt()
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth)
     }
-    fun  bannerAdsCallback(callback: AdsCallBack?) {
+
+    // Add the lifecycle methods
+    fun resumeAdView() {
+        adView?.resume()
+    }
+
+    fun pauseAdView() {
+        adView?.pause()
+    }
+
+    fun destroyAdView() {
+        adView?.destroy()
+        adView = null  // Set to null to release reference and prevent memory leaks
+    }
+
+    fun bannerAdsCallback(callback: AdsCallBack?) {
         adscallback = callback
     }
 }

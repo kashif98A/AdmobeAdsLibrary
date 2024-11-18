@@ -1,12 +1,14 @@
 package com.lib.admoblib
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.cardview.widget.CardView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.lib.admoblib.appOpen.AppOpenAd
 import kotlin.system.exitProcess
 
 
@@ -41,4 +43,6 @@ fun Context.isNetworkConnected(): Boolean {
     }
     bottomSheetDialog!!.show()
 }
+
+
 
