@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
-        binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),false)
+        binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
 
         binding.btnInter.setOnClickListener(View.OnClickListener {
             InterAds.startLoadAdActivity(this,
