@@ -25,7 +25,7 @@ import com.lib.admoblib.R
 class TemplateView : FrameLayout {
     private var templateType = 0
     private var styles: NativeTemplateStyle? = null
-    private var nativeAd: NativeAd? = null
+    internal var nativeAd: NativeAd? = null
     private var nativeAdView: NativeAdView? = null
     private var primaryView: TextView? = null
     private var secondaryView: TextView? = null
@@ -217,6 +217,7 @@ class TemplateView : FrameLayout {
     fun destroyNativeAd() {
         nativeAd!!.destroy()
     }
+
 
     val templateTypeName: String
         get() {

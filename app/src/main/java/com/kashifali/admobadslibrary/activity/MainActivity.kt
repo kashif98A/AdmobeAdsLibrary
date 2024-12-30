@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
               123,false
             )
         })
+
         binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{
             override fun onAdLoaded() {
                 super.onAdLoaded()
@@ -83,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         // Set callback to navigate to SecondActivity once ad is loaded
         binding.nativeMediumpre.nativeAdsCallback(object : AdsCallBack {
             override fun onAdLoaded() {
-                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
+//                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
             }
 
             override fun onFailedToLoad(error: AdError?) {

@@ -20,7 +20,9 @@ class SecondActivity : AppCompatActivity() {
         binding=ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.collapsibleBanner.loadCollapsibleBanner(this,getString(R.string.BannerGender),true)
-        binding.nativeMediumpre.showCachedAd()
+//        binding.nativeMediumpre.showCachedAd()
+        binding.nativeMediumpre.loadNativeMedium(this,getString(R.string.NativeMain),true)
+
     }
 
 
@@ -32,8 +34,9 @@ class SecondActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.collapsibleBanner.destroyAdView()
-        binding.nativeMediumpre.onDestroy()
         Log.d("CheAdview", "onDestroy: ")
+        binding.collapsibleBanner.destroyAdView()
+       binding.nativeMediumpre.destroyNative()
+
     }
 }

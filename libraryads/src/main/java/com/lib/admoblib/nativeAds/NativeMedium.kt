@@ -15,6 +15,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.databinding.SmellNativeLayoutBinding
 import com.lib.admoblib.isNetworkConnected
+import com.lib.admoblib.nativeAds.NativeAdManager.nativeAd
 import com.lib.admoblib.utiliz.Tools
 
 
@@ -88,6 +89,7 @@ class NativeMedium @JvmOverloads constructor(
     // Lifecycle management for the native ad view
     fun onResume() {
         NativeShimmer.startShimmer()
+
     }
     fun onPause() {
         NativeShimmer.stopShimmer()
@@ -95,6 +97,9 @@ class NativeMedium @JvmOverloads constructor(
 
     fun onDestroy() {
         NativeShimmer.stopShimmer()
-        nativetemplate.destroyNativeAd()  // Destroying the native ad to release resources
+        nativetemplate.destroyNativeAd()
+    }
+    fun destroyNative(){
+        nativetemplate.nativeAd?.destroy()
     }
 }
