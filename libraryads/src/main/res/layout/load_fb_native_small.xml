@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmer_container_native"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_height="155dp"
     android:background="@drawable/bg_card_ads"
     app:shimmer_auto_start="true"
     app:shimmer_base_color="#ccc">
@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="5dip">
+        android:padding="1dip">
 
         <LinearLayout
             android:layout_width="match_parent"

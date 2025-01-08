@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ratingone">#262C35</color>
+    <color name="ratingtwo">#FFC107</color>
+    <color name="gray">#707070</color>
+    <color name="lightGray">#eef1f3</color>
+    <color name="black">#FF000000</color>
+    <color name="black_light">#474646</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_color">#FFFFFFFF</color>
+    <color name="btnBg">#ecf7fc</color>
+    <color name="btnIcon">#656565</color>
+    <color name="lightestGray">#f6f8f9</color>
+    <color name="bg_color_light">#D8E2D8</color>
+    <color name="bg_color">#DEFFFF</color>
+</resources>

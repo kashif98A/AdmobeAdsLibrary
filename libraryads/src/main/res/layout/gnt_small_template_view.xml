@@ -7,7 +7,6 @@
         android:id="@+id/native_ad_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:layout_centerInParent="true"
         android:background="@drawable/gnt_outline_shape"
         >
@@ -23,6 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginTop="2dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:text="Test"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/black"
                         android:textSize="18dp" />
 
                     <LinearLayout
@@ -64,7 +64,7 @@
                             android:gravity="bottom"
                             android:lines="1"
                             android:text=""
-                            android:textColor="@color/colorPrimary"
+                            android:textColor="@color/black"
                             android:textSize="8dp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -114,6 +114,7 @@
                 android:maxLines="3"
                 android:layout_marginHorizontal="2dp"
                 android:text=""
+                android:textColor="@color/black"
                 android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
                 app:layout_constraintStart_toStartOf="@+id/linearLayout3"
@@ -127,7 +128,7 @@
                 android:background="@drawable/ads_bg_lib"
                 android:gravity="center"
                 android:text="install"
-                android:textColor="@color/white"
+                android:textColor="@color/white_color"
                 android:textSize="12dp"
                 android:textStyle="bold"
                 android:paddingBottom="5dp"

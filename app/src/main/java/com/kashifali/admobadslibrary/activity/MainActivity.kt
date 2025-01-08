@@ -37,21 +37,21 @@ class MainActivity : AppCompatActivity() {
             )
         })
 
-        binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                Log.d("checkAdsLoads", " native onAdLoaded: ")
-            }
-        })
-        binding.adaptiveBanner.bannerAdsCallback(object : AdsCallBack{
-            override fun onAdLoaded() {
-                Log.d("checkAdsLoads", "onAdLoaded: ")
-            }
-
-//            override fun onFailedToLoad(error: com.google.android.gms.ads.AdError?) {
-//                super.onFailedToLoad(error)
+//        binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{
+//            override fun onAdLoaded() {
+//                super.onAdLoaded()
+//                Log.d("checkAdsLoads", " native onAdLoaded: ")
 //            }
-        })
+//        })
+//        binding.adaptiveBanner.bannerAdsCallback(object : AdsCallBack{
+//            override fun onAdLoaded() {
+//                Log.d("checkAdsLoads", "onAdLoaded: ")
+//            }
+//
+////            override fun onFailedToLoad(error: com.google.android.gms.ads.AdError?) {
+////                super.onFailedToLoad(error)
+////            }
+//        })
         ///for frammnet
 //        binding.btnInter1.setOnClickListener(View.OnClickListener {
 //            InterAdsFragment.startLoadAdFagment(

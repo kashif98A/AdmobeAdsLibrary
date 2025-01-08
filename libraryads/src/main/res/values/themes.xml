@@ -18,8 +18,8 @@
 
     <style name="AdsAppTheme" parent="Theme.AppCompat.Light" />
     <style name="RatingBar" parent="Theme.AppCompat">
-        <item name="colorControlNormal">@color/colorPrimary</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/ratingone</item>
+        <item name="colorControlActivated">@color/ratingtwo</item>
     </style>
     <style name="AppTheme.Ads" parent="@style/AdsAppTheme">
         <item name="android:textSize">11.0sp</item>
