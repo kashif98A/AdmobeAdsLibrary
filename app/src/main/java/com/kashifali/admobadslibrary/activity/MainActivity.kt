@@ -30,9 +30,9 @@ class MainActivity : AppCompatActivity() {
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
         binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
-        loadInterstitialAd(
-            this,  getString(R.string.InterstitialSplash)
-        )
+//        loadInterstitialAd(
+//            this,  getString(R.string.InterstitialSplash)
+//        )
         binding.btnInter.setOnClickListener(View.OnClickListener {
 //            InterAds.startLoadAdActivity(this,
 //               SecondActivity::class.java.canonicalName, getString(R.string.InterstitialSplash),
@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity() {
 //              123,false
 //            )
 
-            showInterstitial(this) {
-                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
-
-            }
+//            showInterstitial(this) {
+//                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
+//
+//            }
         })
 
 //        binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{
