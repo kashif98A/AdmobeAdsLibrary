@@ -12,6 +12,8 @@ import com.kashifali.admobadslibrary.R
 import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
 import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.IntertialAds.InterAds
+import com.lib.admoblib.IntertialAds.LoadAndShowInterstitial.Companion.loadInterstitialAd
+import com.lib.admoblib.IntertialAds.LoadAndShowInterstitial.Companion.showInterstitial
 import com.lib.admoblib.nativeAds.NativeLarge
 import com.lib.admoblib.showBottomSheetDialog
 
@@ -28,13 +30,20 @@ class MainActivity : AppCompatActivity() {
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
         binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
-
+        loadInterstitialAd(
+            this,  getString(R.string.InterstitialSplash)
+        )
         binding.btnInter.setOnClickListener(View.OnClickListener {
-            InterAds.startLoadAdActivity(this,
-               SecondActivity::class.java.canonicalName, getString(R.string.InterstitialSplash),
-              "some_value",
-              123,false
-            )
+//            InterAds.startLoadAdActivity(this,
+//               SecondActivity::class.java.canonicalName, getString(R.string.InterstitialSplash),
+//              "some_value",
+//              123,false
+//            )
+
+            showInterstitial(this) {
+                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
+
+            }
         })
 
 //        binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{

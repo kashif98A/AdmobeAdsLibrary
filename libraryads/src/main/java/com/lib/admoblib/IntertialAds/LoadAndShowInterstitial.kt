@@ -30,7 +30,7 @@ class LoadAndShowInterstitial {
                    }
             })
         }
-        fun showInterstitial(activity: Activity,onDismissed:()->Unit) {
+        fun showInterstitial(activity: Activity,onDismissed:()->Unit,onAdShowed:()->Unit,onAdFailed:()->Unit) {
             if (mInterstitialAd !=null){
                 mInterstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
@@ -42,12 +42,13 @@ class LoadAndShowInterstitial {
                     override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                         Log.d(TAG, "Ad failed to show.")
                         ConstantAds.isInterstitialAvailble=false
-                        onDismissed()
+                        onAdFailed()
                     }
 
                     override fun onAdShowedFullScreenContent() {
                         Log.d(TAG, "Ad showed fullscreen content.")
                         mInterstitialAd = null
+                        onAdShowed()
                     }
                 }
                 mInterstitialAd?.show(activity)
