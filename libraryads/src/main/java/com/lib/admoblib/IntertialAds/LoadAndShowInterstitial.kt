@@ -30,32 +30,37 @@ class LoadAndShowInterstitial {
                    }
             })
         }
-        fun showInterstitial(activity: Activity,onDismissed:()->Unit,onAdShowed:()->Unit,onAdFailed:()->Unit) {
-            if (mInterstitialAd !=null){
-                mInterstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+        fun showInterstitial(
+            activity: Activity,
+            onDismissed: () -> Unit,
+            onAdShowed: () -> Unit,
+            onAdFailed: () -> Unit
+        ) {
+            if (mInterstitialAd != null) {
+                mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
                         Log.d(TAG, "Ad was dismissed.")
-                        ConstantAds.isInterstitialAvailble=false
-                        onDismissed()
+                        ConstantAds.isInterstitialAvailble = false
+                        onDismissed() // Callback after ad dismissal
                     }
 
                     override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                         Log.d(TAG, "Ad failed to show.")
-                        ConstantAds.isInterstitialAvailble=false
-                        onAdFailed()
+                        ConstantAds.isInterstitialAvailble = false
+                        onAdFailed() // Callback if the ad fails to show
                     }
 
                     override fun onAdShowedFullScreenContent() {
                         Log.d(TAG, "Ad showed fullscreen content.")
-                        mInterstitialAd = null
-                        onAdShowed()
+                        mInterstitialAd = null // Nullify ad after it is shown
+                        onAdShowed() // Callback after ad successfully showed
                     }
                 }
-                mInterstitialAd?.show(activity)
-            }
-           else{
+                mInterstitialAd?.show(activity) // Show the interstitial ad
+            } else {
+                // If no ad is available, proceed with dismiss behavior
                 onDismissed()
-           }
+            }
         }
     }
 }
