@@ -2,7 +2,6 @@ package com.kashifali.admobadslibrary.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -11,9 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kashifali.admobadslibrary.R
 import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
 import com.lib.admoblib.AdsCallBack
-import com.lib.admoblib.IntertialAds.InterAds
-import com.lib.admoblib.IntertialAds.LoadAndShowInterstitial.Companion.loadInterstitialAd
-import com.lib.admoblib.IntertialAds.LoadAndShowInterstitial.Companion.showInterstitial
+import com.lib.admoblib.appOpen.AppOpenControl.Companion.setAppOpenActivity
 import com.lib.admoblib.nativeAds.NativeLarge
 import com.lib.admoblib.showBottomSheetDialog
 
@@ -26,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        setAppOpenActivity(this,"MainActivity")
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
         binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
@@ -39,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 //              "some_value",
 //              123,false
 //            )
-
+            startActivity(Intent(this@MainActivity, SecondActivity::class.java))
 //            showInterstitial(this) {
 //                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
 //
