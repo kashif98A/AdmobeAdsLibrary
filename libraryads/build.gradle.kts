@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.app.update)
 }
 
-
 publishing {
     publications {
         register<MavenPublication>("release") {

@@ -36,9 +36,7 @@ class MainActivity : AppCompatActivity() {
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
         binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
-//        loadInterstitialAd(
-//            this,  getString(R.string.InterstitialSplash)
-//        )
+
         binding.btnInter.setOnClickListener(View.OnClickListener {
 //            InterAds.startLoadAdActivity(this,
 //               SecondActivity::class.java.canonicalName, getString(R.string.InterstitialSplash),
@@ -78,7 +76,6 @@ class MainActivity : AppCompatActivity() {
 //                true
 //            )
 //        })
-
         /// call on main Activity
 //        LoadAdsFragment.mutableLiveData = MutableLiveData()
 //        LoadAdsFragment.mutableLiveData!!.observe(this) { myData ->
