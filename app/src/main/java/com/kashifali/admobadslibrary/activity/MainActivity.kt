@@ -3,14 +3,17 @@ package com.kashifali.admobadslibrary.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.ads.AdError
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kashifali.admobadslibrary.R
 import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
 import com.lib.admoblib.AdsCallBack
-import com.lib.admoblib.appOpen.AppOpenControl.Companion.setAppOpenActivity
+import com.lib.admoblib.appOpen.AppOpenControl
 import com.lib.admoblib.nativeAds.NativeLarge
 import com.lib.admoblib.showBottomSheetDialog
 
@@ -21,9 +24,15 @@ class MainActivity : AppCompatActivity() {
     var yesexit: CardView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setAppOpenActivity(this,"MainActivity")
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+//        AppOpenControl.setAppOpenNotShow()
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
        binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
         binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)

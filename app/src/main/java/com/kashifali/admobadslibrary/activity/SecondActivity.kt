@@ -11,7 +11,6 @@ import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
 import com.kashifali.admobadslibrary.databinding.ActivitySecondBinding
 
 import com.lib.admoblib.IntertialAds.InterAds
-import com.lib.admoblib.appOpen.AppOpenControl.Companion.setAppOpenActivity
 
 class SecondActivity : AppCompatActivity() {
     val TAG="SecondActivity"
@@ -23,7 +22,7 @@ class SecondActivity : AppCompatActivity() {
         binding.collapsibleBanner.loadCollapsibleBanner(this,getString(R.string.BannerGender),true)
 //        binding.nativeMediumpre.showCachedAd()
         binding.nativeMediumpre.loadNativeMedium(this,getString(R.string.NativeMain),true)
-        setAppOpenActivity(this,"")
+
     }
 
 
