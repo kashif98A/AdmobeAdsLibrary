@@ -43,7 +43,7 @@ while also offering a sample project to demonstrate its usage.
 Add the following to your `build.gradle` file in the `dependencies` section:
 
  ```Kotlin
-   implementation ("com.github.kashif98A:AdmobeAdsLibrary:2.0.1")
+   implementation ("com.github.kashif98A:AdmobeAdsLibrary:2.0.2")
    ```
 
 2. **Sync your project** with Gradle files.
