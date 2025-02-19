@@ -23,6 +23,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.lib.admoblib.R
+import java.util.Locale
 
 
 class AdmobNativeAdAdapter(private val param: Param) : RecyclerViewAdapterWrapper(param.adapter) {
@@ -191,7 +192,7 @@ class AdmobNativeAdAdapter(private val param: Param) : RecyclerViewAdapterWrappe
                 val param = Param()
                 param.admobNativeId = placementId
                 param.adapter = wrapped
-                param.layout = when (layout.toLowerCase()) {
+                param.layout = when (layout.lowercase(Locale.getDefault())) {
                     "small" -> 0
                     "medium" -> 1
                     else -> 2
