@@ -61,8 +61,9 @@ class LoadAdsFragment : AppCompatActivity() {
 
                 override fun onAdDismissedFullScreenContent() {
                     Log.d(TAG, "Ad dismissed fullscreen content.")
-                    //                    MainActivity.Companion.replaceFrag(actionId,mBundle);
-//                    nextActivity(actionId, intValue, mBundle);
+                    mInterstitialAd = null
+                    nextActivity(actionId, intValue, mBundle)
+                    finish()
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {

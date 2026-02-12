@@ -22,7 +22,7 @@ import com.lib.admoblib.databinding.AdmobBannerLayoutBinding
 import com.lib.admoblib.isNetworkConnected
 import com.lib.admoblib.utiliz.Tools
 
-class CollapsibleBanner @JvmOverloads constructor(
+class CollapsibleBannerTop @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     lateinit var binding: AdmobBannerLayoutBinding
@@ -59,7 +59,7 @@ class CollapsibleBanner @JvmOverloads constructor(
                 adContainerView?.removeAllViews()
 
                 val extras = Bundle()
-                extras.putString("collapsible", "bottom")
+                extras.putString("collapsible", "top")
                 val adRequest = AdRequest.Builder()
                     .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
                     .build()
@@ -86,7 +86,7 @@ class CollapsibleBanner @JvmOverloads constructor(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
                     RelativeLayout.LayoutParams.MATCH_PARENT
                 )
-                adContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                adContainerParams.addRule(RelativeLayout.ALIGN_PARENT_TOP)
                 adContainerView?.addView(adView, adContainerParams)
 
             } else {

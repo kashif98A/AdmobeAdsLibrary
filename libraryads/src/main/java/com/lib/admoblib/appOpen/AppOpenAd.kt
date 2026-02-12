@@ -2,10 +2,15 @@ package com.lib.admoblib.appOpen
 
 import android.app.Activity
 import android.app.Application
+import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.Window
+import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.multidex.BuildConfig
 import com.google.android.gms.ads.AdError
@@ -27,6 +32,18 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
 
     private var appOpenAdManager: AppOpenAdManager? = null
     private var currentActivity: Activity? = null
+
+    // Welcome dialog fields
+    private var welcomeDialog: Dialog? = null
+    private var isShowingWelcomeDialog = false
+    private var isFirstLaunch = true
+    private val handler = Handler(Looper.getMainLooper())
+
+    /** Maximum time (ms) to wait for ad to load before dismissing dialog */
+    var welcomeDialogTimeout: Long = 10000L
+
+    /** Custom welcome dialog layout resource (optional) */
+    var welcomeDialogLayout: Int = R.layout.dialog_welcome_loading
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun appOpenInit(remoteValue: Boolean, adID: String) {
@@ -50,17 +67,24 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
 
     override fun onActivityStarted(activity: Activity) {
-        // An ad activity is started when an ad is showing, which could be AdActivity class from Google
-        // SDK or another activity class implemented by a third party mediation partner. Updating the
-        // currentActivity only when an ad is not showing will ensure it is not an ad activity, but the
-        // one that shows the ad.
         if (!AdsConstant.isMainOpenShowingAd) {
             currentActivity = activity
         }
     }
 
     override fun onActivityResumed(activity: Activity) {
-        appOpenAdManager?.showAdIfAvailable(activity)
+        if (!AdsConstant.isMainOpenShowingAd) {
+            currentActivity = activity
+        }
+
+        // Skip first launch - only show when user comes BACK to app
+        if (isFirstLaunch) {
+            isFirstLaunch = false
+            Log.d(LOG_TAG, "First launch, skipping welcome dialog")
+            return
+        }
+
+        appOpenAdManager?.showWelcomeAndLoadAd(activity)
     }
 
     override fun onActivityPaused(activity: Activity) {}
@@ -69,7 +93,48 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
-    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivityDestroyed(activity: Activity) {
+        if (currentActivity == activity) {
+            currentActivity = null
+        }
+        dismissWelcomeDialog()
+    }
+
+    private fun showWelcomeDialog(activity: Activity) {
+        try {
+            if (activity.isFinishing || activity.isDestroyed) return
+
+            welcomeDialog = Dialog(activity, android.R.style.Theme_NoTitleBar_Fullscreen).apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                setContentView(welcomeDialogLayout)
+                setCancelable(false)
+                setCanceledOnTouchOutside(false)
+                window?.setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT
+                )
+            }
+            welcomeDialog?.show()
+            isShowingWelcomeDialog = true
+            Log.d(LOG_TAG, "Welcome dialog shown")
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Error showing welcome dialog: ${e.message}")
+            isShowingWelcomeDialog = false
+        }
+    }
+
+    private fun dismissWelcomeDialog() {
+        try {
+            if (welcomeDialog != null && welcomeDialog!!.isShowing) {
+                welcomeDialog?.dismiss()
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Error dismissing welcome dialog: ${e.message}")
+        }
+        welcomeDialog = null
+        isShowingWelcomeDialog = false
+        handler.removeCallbacksAndMessages(null)
+    }
 
     /** Inner class that loads and shows app open ads. */
     private inner class AppOpenAdManager {
@@ -79,13 +144,7 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
         /** Keep track of the time an app open ad is loaded to ensure you don't show an expired ad. */
         private var loadTime: Long = 0
 
-        /**
-         * Load an ad.
-         *
-         * @param context the context of the activity that loads the ad
-         */
         fun loadAd(context: Context) {
-            // Do not load ad if there is an unused ad or one is already loading.
             if (AdsConstant.isMainOpenAppLoadingAd || isAdAvailable()) {
                 return
             }
@@ -96,50 +155,44 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
                 AD_UNIT_ID,
                 request,
                 object : AppOpenAd.AppOpenAdLoadCallback() {
-                    /**
-                     * Called when an app open ad has loaded.
-                     *
-                     * @param ad the loaded app open ad.
-                     */
                     override fun onAdLoaded(ad: AppOpenAd) {
                         AdsConstant.mainAppOpenAd = ad
                         AdsConstant.isMainOpenAppLoadingAd = false
                         loadTime = Date().time
                         Log.d(LOG_TAG, "onAdLoaded.")
+                        // Ad loaded while welcome dialog is showing -> show ad
+                        if (isShowingWelcomeDialog && currentActivity != null) {
+                            handler.post {
+                                dismissWelcomeDialog()
+                                showAdDirectly(currentActivity!!)
+                            }
+                        }
                     }
 
-                    /**
-                     * Called when an app open ad has failed to load.
-                     *
-                     * @param loadAdError the error.
-                     */
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         AdsConstant.isMainOpenAppLoadingAd = false
                         Log.d(LOG_TAG, "onAdFailedToLoad: " + loadAdError.message)
+                        // Ad failed -> dismiss welcome dialog
+                        if (isShowingWelcomeDialog) {
+                            handler.post { dismissWelcomeDialog() }
+                        }
                     }
                 },
             )
         }
 
-        /** Check if ad was loaded more than n hours ago. */
         private fun wasLoadTimeLessThanNHoursAgo(numHours: Long): Boolean {
             val dateDifference: Long = Date().time - loadTime
             val numMilliSecondsPerHour: Long = 3600000
             return dateDifference < numMilliSecondsPerHour * numHours
         }
 
-        /** Check if ad exists and can be shown. */
         private fun isAdAvailable(): Boolean {
-            // Ad references in the app open beta will time out after four hours, but this time limit
-            // may change in future beta versions. For details, see:
-            // https://support.google.com/admob/answer/9341964?hl=en
             return AdsConstant.mainAppOpenAd != null && wasLoadTimeLessThanNHoursAgo(4)
         }
 
-        fun showAdIfAvailable(
-            activity: Activity,
-            onShowAdComplete: (() -> Unit?)? = null
-        ) {
+        fun showWelcomeAndLoadAd(activity: Activity) {
+            // All the existing skip conditions
             if (AdsConstant.splashAppOpenAd != null ||
                 AdsConstant.isSplashOpenAppLoadingAd ||
                 AdsConstant.isSplashOpenShowingAd ||
@@ -151,55 +204,78 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
             if (className.contains("splash", ignoreCase = true) || className.isEmpty()) {
                 return
             }
-            // If the app open ad is already showing, do not show the ad again.
             if (AdsConstant.isMainOpenShowingAd) {
                 Log.d(LOG_TAG, "The app open ad is already showing.")
                 return
             }
+            if (activity.isFinishing || activity.isDestroyed) return
+            if (isShowingWelcomeDialog) return
 
-            // If the app open ad is not available yet, invoke the callback.
-            if (!isAdAvailable()) {
-                Log.d(LOG_TAG, "The app open ad is not ready yet.")
-                onShowAdComplete?.invoke()
-                if (googleMobileAdsConsentManager.canRequestAds) {
-                    loadAd(activity)
-                }
-                return
-            }
+            // Show counter logic
             showCounter++
             if (showCounter >= 2) {
                 showCounter = 0
             } else {
                 return
             }
-            Log.d(LOG_TAG, "Will show ad.")
 
+            // Always show welcome dialog first
+            showWelcomeDialog(activity)
+
+            if (isAdAvailable()) {
+                // Ad already loaded -> show dialog briefly then show ad
+                handler.postDelayed({
+                    if (isShowingWelcomeDialog) {
+                        dismissWelcomeDialog()
+                        showAdDirectly(activity)
+                    }
+                }, 1500)
+            } else {
+                // Ad not loaded -> load it now, dialog will dismiss when ad loads
+                if (googleMobileAdsConsentManager.canRequestAds) {
+                    loadAd(activity)
+                }
+
+                // Timeout: dismiss dialog if ad doesn't load in time
+                handler.postDelayed({
+                    if (isShowingWelcomeDialog) {
+                        Log.d(LOG_TAG, "Welcome dialog timeout, dismissing")
+                        dismissWelcomeDialog()
+                    }
+                }, welcomeDialogTimeout)
+            }
+        }
+
+        private fun showAdDirectly(activity: Activity) {
+            if (!isAdAvailable()) {
+                Log.d(LOG_TAG, "Ad not available to show")
+                if (googleMobileAdsConsentManager.canRequestAds) {
+                    loadAd(activity)
+                }
+                return
+            }
+
+            Log.d(LOG_TAG, "Will show ad.")
             AdsConstant.mainAppOpenAd?.fullScreenContentCallback =
                 object : FullScreenContentCallback() {
-                    /** Called when full screen content is dismissed. */
                     override fun onAdDismissedFullScreenContent() {
-                        // Set the reference to null so isAdAvailable() returns false.
                         AdsConstant.mainAppOpenAd = null
                         AdsConstant.isMainOpenShowingAd = false
                         Log.d(LOG_TAG, "onAdDismissedFullScreenContent.")
-                        onShowAdComplete?.invoke()
                         if (googleMobileAdsConsentManager.canRequestAds) {
                             loadAd(activity)
                         }
                     }
 
-                    /** Called when fullscreen content failed to show. */
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                         AdsConstant.mainAppOpenAd = null
                         AdsConstant.isMainOpenShowingAd = false
                         Log.d(LOG_TAG, "onAdFailedToShowFullScreenContent: " + adError.message)
-                        onShowAdComplete?.invoke()
                         if (googleMobileAdsConsentManager.canRequestAds) {
                             loadAd(activity)
                         }
                     }
 
-                    /** Called when fullscreen content is shown. */
                     override fun onAdShowedFullScreenContent() {
                         Log.d(LOG_TAG, "onAdShowedFullScreenContent.")
                     }

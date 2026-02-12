@@ -9,6 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.lib.admoblib.R
 import com.lib.admoblib.isNetworkConnected
 import java.io.IOException
@@ -175,6 +179,35 @@ object Tools {
         context.startActivity(intent)
     }
 
+    /**
+     * Enable edge-to-edge and apply system bar insets padding to root view.
+     * Call this in onCreate() BEFORE setContentView().
+     *
+     * Usage:
+     *   Tools.setupEdgeToEdge(this, R.id.main)
+     *
+     * or with View reference:
+     *   Tools.setupEdgeToEdge(this, binding.root)
+     */
+    fun setupEdgeToEdge(activity: ComponentActivity, rootViewId: Int) {
+        activity.enableEdgeToEdge()
+        activity.window.decorView.post {
+            val rootView = activity.findViewById<View>(rootViewId)
+            rootView?.let { applyWindowInsets(it) }
+        }
+    }
 
+    fun setupEdgeToEdge(activity: ComponentActivity, rootView: View) {
+        activity.enableEdgeToEdge()
+        applyWindowInsets(rootView)
+    }
+
+    fun applyWindowInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
 
 }
