@@ -81,11 +81,9 @@ class LoadAdsFragment : AppCompatActivity() {
                 }
 
                 override fun onAdShowedFullScreenContent() {
-                    // Called when ad is shown.
+                    // Called when ad is shown. Navigation happens on dismissal, not here,
+                    // otherwise the host activity would be finished while the ad is visible.
                     Log.d(TAG, "Ad showed fullscreen content.")
-                    mInterstitialAd = null
-                    nextActivity(actionId, intValue, mBundle)
-                    finish()
                 }
             }
             mInterstitialAd!!.show(this)
@@ -95,9 +93,8 @@ class LoadAdsFragment : AppCompatActivity() {
     }
 
     private fun nextActivity(nextClassNameInString: Int, intValue: Int, strValue: Bundle?) {
-        val myData = MyData(nextClassNameInString, intValue, strValue!!)
-        mutableLiveData!!.postValue(myData)
-        finish()
+        val myData = MyData(nextClassNameInString, intValue, strValue ?: Bundle())
+        mutableLiveData.postValue(myData)
     }
 
     override fun onPause() {
@@ -111,7 +108,7 @@ class LoadAdsFragment : AppCompatActivity() {
     }
 
     companion object {
-        val TAG = LoadAdsActivity::class.java.getName()
-        var mutableLiveData: MutableLiveData<MyData>? = null
+        val TAG = LoadAdsFragment::class.java.name
+        var mutableLiveData: MutableLiveData<MyData> = MutableLiveData()
     }
 }

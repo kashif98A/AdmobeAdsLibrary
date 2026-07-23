@@ -1,4 +1,4 @@
-package com.rapiddappstudio.unlocckanydevcietechnique.utiliz
+package com.lib.admoblib.utiliz
 
 import android.app.Activity
 import android.util.Log

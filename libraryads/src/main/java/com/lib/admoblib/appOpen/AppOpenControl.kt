@@ -44,6 +44,13 @@ class AppOpenControl(private val application: Application, private val adId: Str
     init {
         application.registerActivityLifecycleCallbacks(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        // On-demand: do NOT preload at startup. The ad is loaded lazily the first
+        // time the app is foregrounded and an ad is actually needed
+        // (see showWelcomeAndLoadAd()). Call preload() explicitly to warm it up.
+    }
+
+    /** Optionally warm up an app-open ad ahead of time (e.g. after the splash screen). */
+    fun preload() {
         loadAd()
     }
 
@@ -217,20 +224,27 @@ class AppOpenControl(private val application: Application, private val adId: Str
 
     companion object {
         var shouldShowAd: Boolean = true
-        fun setAdsOpenFragment(fragment: Fragment?, fragmentname: String?) {
-            if (fragment != null && fragmentname != null && fragment::class == fragmentname::class) {
-                shouldShowAd = false
-            } else {
-                shouldShowAd = true
-            }
+
+        /**
+         * Disable the app-open ad while the given [fragment] is the one identified by
+         * [fragmentName] (fully-qualified or simple class name). Otherwise re-enable it.
+         */
+        fun setAdsOpenFragment(fragment: Fragment?, fragmentName: String?) {
+            shouldShowAd = !isSameClass(fragment, fragmentName)
         }
 
-        fun setAppOpenActivity(fragment: Activity?, fragmentname: String) {
-            if (fragment != null && fragmentname != null && fragment::class == fragmentname::class) {
-                shouldShowAd = false
-            } else {
-                shouldShowAd = true
-            }
+        /**
+         * Disable the app-open ad while the given [activity] is the one identified by
+         * [activityName] (fully-qualified or simple class name). Otherwise re-enable it.
+         */
+        fun setAppOpenActivity(activity: Activity?, activityName: String?) {
+            shouldShowAd = !isSameClass(activity, activityName)
+        }
+
+        private fun isSameClass(instance: Any?, className: String?): Boolean {
+            if (instance == null || className.isNullOrEmpty()) return false
+            val kClass = instance::class
+            return kClass.qualifiedName == className || kClass.simpleName == className
         }
     }
 }

@@ -33,15 +33,14 @@ fun Context.isNetworkConnected(): Boolean {
     return false
 }
 
- fun showBottomSheetDialog(context: Activity,bottomSheetDialog: BottomSheetDialog) {
-
-    val ExitBtn = bottomSheetDialog.findViewById<CardView>(R.id.exitCard)
-    ExitBtn?.setOnClickListener {
+fun showBottomSheetDialog(context: Activity, bottomSheetDialog: BottomSheetDialog) {
+    val exitBtn = bottomSheetDialog.findViewById<CardView>(R.id.exitCard)
+    exitBtn?.setOnClickListener {
+        bottomSheetDialog.dismiss()
         context.finishAffinity()
         exitProcess(0)
-        bottomSheetDialog.dismiss()
     }
-    bottomSheetDialog!!.show()
+    bottomSheetDialog.show()
 }
 
 

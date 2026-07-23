@@ -61,8 +61,9 @@ class LoadAdsReplaceFragment : AppCompatActivity() {
 
                 override fun onAdDismissedFullScreenContent() {
                     Log.d(TAG, "Ad dismissed fullscreen content.")
-                    //                    MainActivity.Companion.replaceFrag(actionId,mBundle);
-//                    nextActivity(actionId, intValue, mBundle);
+                    mInterstitialAd = null
+                    nextActivity(actionId!!, intValue, mBundle)
+                    finish()
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -80,11 +81,9 @@ class LoadAdsReplaceFragment : AppCompatActivity() {
                 }
 
                 override fun onAdShowedFullScreenContent() {
-                    // Called when ad is shown.
+                    // Called when ad is shown. Navigation happens on dismissal, not here,
+                    // otherwise the host activity would be finished while the ad is visible.
                     Log.d(TAG, "Ad showed fullscreen content.")
-                    mInterstitialAd = null
-                    nextActivity(actionId!!, intValue, mBundle)
-                    finish()
                 }
             }
             mInterstitialAd!!.show(this)
@@ -94,9 +93,8 @@ class LoadAdsReplaceFragment : AppCompatActivity() {
     }
 
     private fun nextActivity(nextClassNameInString: String, intValue: Int, strValue: Bundle?) {
-        val myData = MyData2(nextClassNameInString, intValue, strValue!!)
-        mutableLiveData!!.postValue(myData)
-        finish()
+        val myData = MyData2(nextClassNameInString, intValue, strValue ?: Bundle())
+        mutableLiveData.postValue(myData)
     }
 
     override fun onPause() {
@@ -110,7 +108,7 @@ class LoadAdsReplaceFragment : AppCompatActivity() {
     }
 
     companion object {
-        val TAG = LoadAdsActivity::class.java.getName()
-        var mutableLiveData: MutableLiveData<MyData2>? = null
+        val TAG = LoadAdsReplaceFragment::class.java.name
+        var mutableLiveData: MutableLiveData<MyData2> = MutableLiveData()
     }
 }

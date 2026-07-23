@@ -57,8 +57,7 @@ object InterAdsReplaceFragment {
         }
     }
     private fun nextActivity(nextClassNameInString: String, intValue: Int, strValue: Bundle?) {
-        val myData = MyData2(nextClassNameInString, intValue, strValue!!)
-        LoadAdsReplaceFragment.mutableLiveData!!.postValue(myData)
-
+        val myData = MyData2(nextClassNameInString, intValue, strValue ?: Bundle())
+        LoadAdsReplaceFragment.mutableLiveData.postValue(myData)
     }
 }

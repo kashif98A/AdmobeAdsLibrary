@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -76,28 +77,36 @@ class AdmobNativeAdAdapter(private val param: Param) : RecyclerViewAdapterWrappe
 
     private fun onBindAdViewHolder(holder: RecyclerView.ViewHolder) {
         val adHolder = holder as AdViewHolder
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             adHolder.nativeShimmer.visibility = View.GONE
         }, 3000)
 
         if (param.forceReloadAdOnBind || !adHolder.loaded) {
             val adLoader = AdLoader.Builder(adHolder.context, param.admobNativeId)
                 .forNativeAd { nativeAd ->
-                    val builder = NativeTemplateStyle.Builder()
+                    val styles = NativeTemplateStyle.Builder()
                         .withPrimaryTextSize(11f)
                         .withSecondaryTextSize(10f)
                         .withTertiaryTextSize(6f)
                         .withCallToActionTextSize(11f)
+                        .build()
 
-                    when (param.layout) {
-                        0 -> {
-                            adHolder.templateSmall.visibility = View.VISIBLE
-                            adHolder.templateSmall.setStyles(builder.build())
-                            adHolder.templateSmall.setNativeAd(nativeAd)
-                            adHolder.nativeShimmer.visibility = View.GONE
-                        }
-                        // Add more cases if needed
+                    // layout 0 = small, 1 = medium, 2 = large. Only small and medium
+                    // templates exist, so medium/large both use the (larger) medium view.
+                    val active: TemplateView
+                    val inactive: TemplateView
+                    if (param.layout == 0) {
+                        active = adHolder.templateSmall
+                        inactive = adHolder.templateMedium
+                    } else {
+                        active = adHolder.templateMedium
+                        inactive = adHolder.templateSmall
                     }
+                    inactive.visibility = View.GONE
+                    active.setStyles(styles)
+                    active.setNativeAd(nativeAd)
+                    active.visibility = View.VISIBLE
+                    adHolder.nativeShimmer.visibility = View.GONE
 
                     adHolder.loaded = true
                 }
@@ -221,7 +230,8 @@ class AdmobNativeAdAdapter(private val param: Param) : RecyclerViewAdapterWrappe
     }
 
     private class AdViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val templateSmall: TemplateView = view.findViewById(R.id.my_template)
+        val templateMedium: TemplateView = view.findViewById(R.id.my_template)
+        val templateSmall: TemplateView = view.findViewById(R.id.my_template_small)
         val nativeShimmer: ShimmerFrameLayout = view.findViewById(R.id.load_native)
         val layNative: RelativeLayout = view.findViewById(R.id.Laynative)
         var loaded = false

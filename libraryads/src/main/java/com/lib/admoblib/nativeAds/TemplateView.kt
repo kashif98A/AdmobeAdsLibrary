@@ -158,6 +158,8 @@ class TemplateView : FrameLayout {
     }
 
     fun setNativeAd(nativeAd: NativeAd) {
+        // Release any previously bound ad to avoid leaking it when the view is reused.
+        this.nativeAd?.takeIf { it !== nativeAd }?.destroy()
         this.nativeAd = nativeAd
         val store = nativeAd.store
         val advertiser = nativeAd.advertiser
@@ -215,7 +217,8 @@ class TemplateView : FrameLayout {
      * https://developers.google.com/admob/android/native-unified#destroy_ad
      */
     fun destroyNativeAd() {
-        nativeAd!!.destroy()
+        nativeAd?.destroy()
+        nativeAd = null
     }
 
 

@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import androidx.multidex.BuildConfig
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -47,8 +46,8 @@ class AppOpenAd(val context: Context) : Application.ActivityLifecycleCallbacks {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun appOpenInit(remoteValue: Boolean, adID: String) {
-        if (!BuildConfig.DEBUG && adID.contains(context.getString(R.string.AppId))) {
-            Log.e(LOG_TAG, "openApp: test AD_ID found($adID)")
+        if (adID.isBlank()) {
+            Log.e(LOG_TAG, "openApp: empty AD_ID")
             return
         }
         if (!remoteValue) {

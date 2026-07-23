@@ -53,7 +53,7 @@ class AppOpenManager(private val application: Application, private val adId: Str
             application,
             adId,
             adRequest,
-            loadCallback as AppOpenAd.AppOpenAdLoadCallback
+            loadCallback
         )
     }
 
@@ -76,7 +76,7 @@ class AppOpenManager(private val application: Application, private val adId: Str
                     Log.d(TAG, "onAdShowedFullScreenContent: ")
                 }
             }
-            currentActivity?.let { appOpenAd?.show(currentActivity!!) }
+            currentActivity?.let { activity -> appOpenAd?.show(activity) }
         } else {
             Log.d(TAG, "Can not show ad.")
             loadAd()
