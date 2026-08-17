@@ -19,9 +19,12 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivitySecondBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.collapsibleBanner.loadCollapsibleBanner(this,getString(R.string.BannerGender),true)
-//        binding.nativeMediumpre.showCachedAd()
-        binding.nativeMediumpre.loadNativeMedium(this,getString(R.string.NativeMain),true)
+        // Instant: attach the collapsible banner preloaded on the previous screen.
+        binding.collapsibleBanner.showBanner(this,getString(R.string.BannerGender),true)
+        // Instant: show the native ad preloaded on the previous screen.
+        binding.nativeMediumpre.showNativeAd(this,getString(R.string.NativeMain),true)
+        // Custom native, centered on this screen.
+        binding.nativeCustom.loadNativeCustom(this,getString(R.string.NativeMain),true)
 
     }
 
@@ -37,6 +40,7 @@ class SecondActivity : AppCompatActivity() {
         Log.d("CheAdview", "onDestroy: ")
         binding.collapsibleBanner.destroyAdView()
        binding.nativeMediumpre.destroyNative()
+        binding.nativeCustom.onDestroy()
 
     }
 }

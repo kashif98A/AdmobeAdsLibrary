@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/Laynative"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.lib.admoblib.nativeAds.TemplateView
+            android:id="@+id/my_template"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:gnt_template_type="@layout/gnt_fullscreen_template_view" />
+
+        <include
+            android:id="@+id/footer"
+            layout="@layout/load_fb_full_native" />
+    </RelativeLayout>
+
+    <!-- Close / skip button, sits above the ad content -->
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="14dp"
+        android:background="@drawable/bg_close_native"
+        android:contentDescription="Close ad"
+        android:elevation="8dp"
+        android:padding="7dp"
+        android:src="@drawable/ic_close_native"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

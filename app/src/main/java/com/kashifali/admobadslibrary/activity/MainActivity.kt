@@ -14,6 +14,8 @@ import com.kashifali.admobadslibrary.R
 import com.kashifali.admobadslibrary.databinding.ActivityMainBinding
 import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.appOpen.AppOpenControl
+import com.lib.admoblib.bannerAds.BannerAdPreloader
+import com.lib.admoblib.nativeAds.NativeAdPreloader
 import com.lib.admoblib.nativeAds.NativeLarge
 import com.lib.admoblib.showBottomSheetDialog
 
@@ -34,8 +36,15 @@ class MainActivity : AppCompatActivity() {
         }
 //        AppOpenControl.setAppOpenNotShow()
         binding.adaptiveBanner.loadAdaptiveBanner(this,getString(R.string.BannerGender),true)
-       binding.nativeLarge.loadNativeLarge(this,getString(R.string.NativeMain),true)
+       // Instant: consumes the native ad preloaded at app start (see MyApp).
+       binding.nativeLarge.showNativeAd(this,getString(R.string.NativeMain),true)
         binding.nativeMedium.loadNativeMedium(this,getString(R.string.NativeMain),true)
+        // New custom-styled native (media-left card, orange "Learn more" CTA)
+        binding.nativeCustom.loadNativeCustom(this,getString(R.string.NativeMain),true)
+
+        // Preload ads for the next screens so they open with an instant ad.
+        BannerAdPreloader.preload(this, getString(R.string.BannerGender), collapsible = true)
+        NativeAdPreloader.preload(this, getString(R.string.NativeMain))
 
         binding.btnInter.setOnClickListener(View.OnClickListener {
 //            InterAds.startLoadAdActivity(this,
@@ -49,6 +58,16 @@ class MainActivity : AppCompatActivity() {
 //
 //            }
         })
+
+        // Open the full-screen native ad screen
+        binding.btnFullNative.setOnClickListener {
+            startActivity(Intent(this@MainActivity, FullNativeAdActivity::class.java))
+        }
+
+        // Open the custom collapsible native ad screen
+        binding.btnCollapsibleNative.setOnClickListener {
+            startActivity(Intent(this@MainActivity, CollapsibleNativeActivity::class.java))
+        }
 
 //        binding.nativeMedium.nativeAdsCallback(object : AdsCallBack{
 //            override fun onAdLoaded() {

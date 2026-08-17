@@ -21,18 +21,38 @@
         android:id="@+id/btnInter1"
         app:layout_constraintTop_toBottomOf="@+id/btnInter"/>
 
+    <Button
+        android:id="@+id/btnFullNative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Full Screen Native"
+        app:layout_constraintTop_toBottomOf="@+id/btnInter1"/>
+
+    <Button
+        android:id="@+id/btnCollapsibleNative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Collapsible Native"
+        app:layout_constraintTop_toBottomOf="@+id/btnFullNative"/>
+
 
     <com.lib.admoblib.nativeAds.NativeLarge
         android:id="@+id/nativeLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/btnInter1"/>
+        app:layout_constraintTop_toBottomOf="@+id/btnCollapsibleNative"/>
 
     <com.lib.admoblib.nativeAds.NativeMedium
         android:id="@+id/nativeMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/nativeLarge"/>
+
+    <com.lib.admoblib.nativeAds.NativeCustom
+        android:id="@+id/nativeCustom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/nativeMedium"/>
 
     <com.lib.admoblib.nativeAds.NativeMediumPreload
         android:id="@+id/nativeMediumpre"

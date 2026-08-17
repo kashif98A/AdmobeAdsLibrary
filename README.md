@@ -7,7 +7,16 @@ while also offering a sample project to demonstrate its usage.
 ## Features
 
 - **AdMob Ads Management**: Easily integrate and manage AdMob ads in your Android applications,
-  including banner, interstitial, and native ads.
+  including banner, collapsible banner, interstitial, app-open, and native ads.
+- **Native ad styles**: Ready-made native views — `NativeLarge`, `NativeMedium`, `NativeCustom`
+  (media-on-the-left card), `NativeFullScreen` (full-screen native), and `NativeCollapsible`
+  (collapsible native card with a chevron toggle).
+- **Instant / on-demand ads (preloading)**: Preload native and banner ads ahead of time and show
+  them instantly (no shimmer wait) when a screen opens — via `NativeAdPreloader` /
+  `BannerAdPreloader` and the `showNativeAd()` / `showBanner()` helpers.
+- **Ad lifecycle callbacks**: A single `AdsCallBack` interface reports `onAdLoading`, `onAdLoaded`,
+  `onFailedToLoad`, `onAdShownFromCache`, `onAdImpression`, `onAdClicked`, `onAdOpened`, and
+  `onAdClosed` for native, banner, and interstitial ads.
 - **App Update**: Is there a feature in the app to notify about updates, or will it automatically update.
 - **Rate us**: Does the app have a 'Rate Us' feature where you can give a rating that will be displayed, helping to increase the app's overall rating.
 - **UMP Consent Management**: Manage user consent using Google's User Messaging Platform (UMP) to
@@ -127,6 +136,118 @@ var nativeLarge: NativeLarge = findViewById(R.id.nativeLarge)
 nativeLarge.loadNativeLarge(this, "ca-app-pub-3940256099942544/2247696110",true)
 ```
 
+##### Custom native (media-on-the-left card)
+
+```xml
+<com.lib.admoblib.nativeAds.NativeCustom
+    android:id="@+id/nativeCustom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+```
+
+```kotlin
+binding.nativeCustom.loadNativeCustom(this, "ca-app-pub-3940256099942544/2247696110", true)
+```
+
+##### Full-screen native
+
+Give the view `match_parent` height (usually the only view in an Activity). A built-in close
+button is provided.
+
+```xml
+<com.lib.admoblib.nativeAds.NativeFullScreen
+    android:id="@+id/nativeFullScreen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+```
+
+```kotlin
+binding.nativeFullScreen.setOnCloseClickListener { finish() }
+binding.nativeFullScreen.loadNativeFullScreen(this, "ca-app-pub-3940256099942544/2247696110", true)
+
+// forward lifecycle
+override fun onResume()  { super.onResume();  binding.nativeFullScreen.onResume() }
+override fun onPause()   { super.onPause();   binding.nativeFullScreen.onPause() }
+override fun onDestroy() { super.onDestroy(); binding.nativeFullScreen.onDestroy() }
+```
+
+##### Collapsible native
+
+A native card with a large media area and a chevron. Tapping the chevron collapses the media
+(and the chevron), leaving the compact icon + text + Install card.
+
+```xml
+<com.lib.admoblib.nativeAds.NativeCollapsible
+    android:id="@+id/nativeCollapsible"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+```
+
+```kotlin
+binding.nativeCollapsible.loadNativeCollapsible(this, "ca-app-pub-3940256099942544/2247696110", true)
+```
+
+#### Instant / on-demand ads (preloading)
+
+By default, an ad is requested when the screen opens, so the user waits (shimmer) while it loads.
+To make ads appear **instantly**, initialize the Mobile Ads SDK once at app start and preload the
+ad **before** the screen that needs it.
+
+```kotlin
+class MyApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        // Warm up the SDK so the first ad isn't slow, then preload a native ad.
+        MobileAds.initialize(this) {
+            NativeAdPreloader.preload(this, "ca-app-pub-3940256099942544/2247696110")
+        }
+    }
+}
+```
+
+Preload a banner on the previous screen (an Activity is needed for adaptive sizing):
+
+```kotlin
+BannerAdPreloader.preload(this, "ca-app-pub-3940256099942544/2014213617")                  // adaptive
+BannerAdPreloader.preload(this, "ca-app-pub-3940256099942544/2014213617", collapsible = true)
+```
+
+Then, on the target screen, show it instantly (falls back to a normal load if nothing was
+preloaded, and re-preloads for the next screen):
+
+```kotlin
+binding.nativeMedium.showNativeAd(this, "ca-app-pub-3940256099942544/2247696110", true)
+binding.adaptiveBanner.showBanner(this, "ca-app-pub-3940256099942544/2014213617", true)
+```
+
+`showNativeAd()` is available on `NativeLarge`, `NativeMedium`, `NativeCustom`,
+`NativeFullScreen`, and `NativeCollapsible`; `showBanner()` on `AdaptiveBanner` and
+`CollapsibleBanner`.
+
+#### Ad lifecycle callbacks
+
+Every ad view reports its lifecycle through the `AdsCallBack` interface. All methods have default
+(empty) bodies, so override only the ones you need.
+
+```kotlin
+binding.nativeLarge.nativeAdsCallback(object : AdsCallBack {
+    override fun onAdLoading() {}          // request started (show your loader)
+    override fun onAdLoaded() {}           // ad is on screen
+    override fun onFailedToLoad(error: AdError?) {}
+    override fun onAdShownFromCache() {}   // served instantly from the preload pool
+    override fun onAdImpression() {}
+    override fun onAdClicked() {}
+    override fun onAdOpened() {}
+    override fun onAdClosed() {}
+})
+
+// Banners use bannerAdsCallback(...)
+binding.adaptiveBanner.bannerAdsCallback(object : AdsCallBack {
+    override fun onAdLoaded() {}
+    override fun onFailedToLoad(error: AdError?) {}
+})
+```
+
 
 ```kotlin
 //call on OncreatMethod
@@ -146,26 +267,45 @@ In an Activity
 To load interstitial ads can be loaded on request , use the following code."
 ```kotlin
 InterAds.startLoadAdActivity(this,
-    NextActivity::class.java.canonicalName, "ca-app-pub-3940256099942544/1033173712"),
+    NextActivity::class.java.canonicalName, "ca-app-pub-3940256099942544/1033173712",
     "some_value",
-    123,false
+    123, false
 )
 ```
 
-To load interstitial ads  on Demand use following code.
+You can pass an optional `AdsCallBack` to receive the interstitial lifecycle events
+(`onAdLoading`, `onAdLoaded`, `onFailedToLoad`, `onAdImpression`, `onAdClicked`, `onAdOpened`,
+`onAdClosed`):
+
 ```kotlin
-  loadInterstitialAd(this@SplashActivity, "ca-app-pub-3940256099942544/1033173712")
+InterAds.startLoadAdActivity(this,
+    NextActivity::class.java.canonicalName, "ca-app-pub-3940256099942544/1033173712",
+    "some_value", 123, true,
+    object : AdsCallBack {
+        override fun onAdLoaded() {}
+        override fun onFailedToLoad(error: AdError?) {}
+        override fun onAdClosed() {}
+    })
+```
 
+To load interstitial ads on demand use the following code. The optional `AdsCallBack` reports the
+same lifecycle events; `onDismissed` always runs so your navigation continues.
 
- binding.NextButton.setOnClickListener(View.OnClickListener {
-     ///show Here
-    showInterstitial(this) {
-        val intent = Intent(this@SplashActivity, MainActivity::class.java)
-        startActivity(intent)
+```kotlin
+LoadAndShowInterstitial.loadInterstitialAd(this, "ca-app-pub-3940256099942544/1033173712")
+
+binding.NextButton.setOnClickListener {
+    LoadAndShowInterstitial.showInterstitial(this, callback = null) {
+        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
     }
-})
+}
 
-
+// Or load-and-show in one call:
+LoadAndShowInterstitial.loadAndShowInterstitial(
+    this, "ca-app-pub-3940256099942544/1033173712"
+) {
+    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+}
 ```
 AppOpen Splash & onResum
 ```kotlin
@@ -202,7 +342,9 @@ Rate the app by pasting the following code into any Activity you want.
 ### Sample Project
 
 A sample project is included in the `app` directory. It demonstrates how to use AdmobeAdsLibrary to
-manage ads, purchases, and user consent. Follow these steps to run the sample project:
+manage ads and user consent, including buttons on the main screen that open dedicated screens for
+the **full-screen native** and **collapsible native** ads, plus inline **custom native** and
+preloaded (instant) native/banner examples. Follow these steps to run the sample project:
 
 1. Clone the repository:
 

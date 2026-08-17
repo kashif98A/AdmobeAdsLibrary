@@ -1,6 +1,5 @@
 package com.lib.admoblib.nativeAds
 
-import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,39 +12,51 @@ import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.lib.admoblib.AdsCallBack
-import com.lib.admoblib.databinding.SmellNativeLayoutBinding
+import com.lib.admoblib.databinding.CustomNativeLayoutBinding
 import com.lib.admoblib.isNetworkConnected
-import com.lib.admoblib.nativeAds.NativeAdManager.nativeAd
-import com.lib.admoblib.utiliz.Tools
 
-
-class NativeMedium @JvmOverloads constructor(
+/**
+ * A compact, media-on-the-left native ad card (headline + body on the right and a
+ * full-width "Learn more" style call-to-action underneath).
+ *
+ * Usage:
+ *   <com.lib.admoblib.nativeAds.NativeCustom
+ *       android:id="@+id/nativeCustom"
+ *       android:layout_width="match_parent"
+ *       android:layout_height="wrap_content" />
+ *
+ *   binding.nativeCustom.loadNativeCustom(this, getString(R.string.NativeMain), true)
+ *   // or, for an instant preloaded ad:
+ *   binding.nativeCustom.showNativeAd(this, getString(R.string.NativeMain), true)
+ */
+class NativeCustom @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    lateinit var binding: SmellNativeLayoutBinding
+
+    lateinit var binding: CustomNativeLayoutBinding
     private lateinit var nativetemplate: TemplateView
     private lateinit var NativeShimmer: ShimmerFrameLayout
     private lateinit var Laynative: RelativeLayout
     var adscallback: AdsCallBack? = null
+
     init {
         initAdmob()
     }
 
     private fun initAdmob() {
         val inflater = LayoutInflater.from(context)
-        binding = SmellNativeLayoutBinding.inflate(inflater, this, true)
+        binding = CustomNativeLayoutBinding.inflate(inflater, this, true)
         nativetemplate = binding.myTemplate
         NativeShimmer = binding.footer.shimmerContainerNative
         Laynative = binding.Laynative
     }
 
-    fun loadNativeMedium(
-        activity: Activity, admobNativeIds: String, status: Boolean
+    fun loadNativeCustom(
+        activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (context.isNetworkConnected()) {
             when {
                 status -> {
-                    Tools.hideNavigationBar(activity)
                     val adLoader =
                         AdLoader.Builder(activity, admobNativeIds).forNativeAd { nativeAd ->
                             val styles = NativeTemplateStyle.Builder().build()
@@ -95,7 +106,6 @@ class NativeMedium @JvmOverloads constructor(
                 }
 
                 else -> {
-                    Tools.showNavigationBar(activity)
                     Laynative.visibility = View.GONE
                 }
             }
@@ -103,6 +113,7 @@ class NativeMedium @JvmOverloads constructor(
             Laynative.visibility = View.GONE
         }
     }
+
     /**
      * Show a native ad instantly from the preload pool ([NativeAdPreloader]).
      * If a preloaded ad is ready it is bound immediately (no shimmer wait); otherwise
@@ -110,14 +121,12 @@ class NativeMedium @JvmOverloads constructor(
      * next screen so it stays "on-demand fast".
      */
     fun showNativeAd(
-        activity: Activity, admobNativeIds: String, status: Boolean
+        activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (!status || !context.isNetworkConnected()) {
-            Tools.showNavigationBar(activity)
             Laynative.visibility = View.GONE
             return
         }
-        Tools.hideNavigationBar(activity)
         val preloaded = NativeAdPreloader.poll(admobNativeIds)
         if (preloaded != null) {
             val styles = NativeTemplateStyle.Builder().build()
@@ -130,21 +139,21 @@ class NativeMedium @JvmOverloads constructor(
             adscallback?.onAdShownFromCache()
             adscallback?.onAdLoaded()
         } else {
-            loadNativeMedium(activity, admobNativeIds, status)
+            loadNativeCustom(activity, admobNativeIds, status)
         }
         // Keep the pool warm for the next screen.
         NativeAdPreloader.preload(activity, admobNativeIds, true)
     }
 
-    fun  nativeAdsCallback(callback: AdsCallBack?) {
+    fun nativeAdsCallback(callback: AdsCallBack?) {
         adscallback = callback
     }
 
     // Lifecycle management for the native ad view
     fun onResume() {
         NativeShimmer.startShimmer()
-
     }
+
     fun onPause() {
         NativeShimmer.stopShimmer()
     }
@@ -152,8 +161,5 @@ class NativeMedium @JvmOverloads constructor(
     fun onDestroy() {
         NativeShimmer.stopShimmer()
         nativetemplate.destroyNativeAd()
-    }
-    fun destroyNative(){
-        nativetemplate.nativeAd?.destroy()
     }
 }

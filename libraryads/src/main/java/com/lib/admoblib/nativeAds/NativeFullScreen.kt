@@ -1,10 +1,10 @@
 package com.lib.admoblib.nativeAds
 
-import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -13,39 +13,47 @@ import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.lib.admoblib.AdsCallBack
-import com.lib.admoblib.databinding.SmellNativeLayoutBinding
+import com.lib.admoblib.databinding.FullNativeLayoutBinding
 import com.lib.admoblib.isNetworkConnected
-import com.lib.admoblib.nativeAds.NativeAdManager.nativeAd
-import com.lib.admoblib.utiliz.Tools
 
-
-class NativeMedium @JvmOverloads constructor(
+/**
+ * A full–screen native ad view. Drop it into any layout with
+ * width/height = match_parent (typically as the only child of an Activity)
+ * and call [loadNativeFullScreen] to fill the whole screen with a native ad.
+ *
+ * A close button is provided out of the box – use [setOnCloseClickListener]
+ * to react to it (e.g. finish the hosting Activity).
+ */
+class NativeFullScreen @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    lateinit var binding: SmellNativeLayoutBinding
+
+    lateinit var binding: FullNativeLayoutBinding
     private lateinit var nativetemplate: TemplateView
     private lateinit var NativeShimmer: ShimmerFrameLayout
     private lateinit var Laynative: RelativeLayout
+    private lateinit var closeButton: ImageView
     var adscallback: AdsCallBack? = null
+
     init {
         initAdmob()
     }
 
     private fun initAdmob() {
         val inflater = LayoutInflater.from(context)
-        binding = SmellNativeLayoutBinding.inflate(inflater, this, true)
+        binding = FullNativeLayoutBinding.inflate(inflater, this, true)
         nativetemplate = binding.myTemplate
         NativeShimmer = binding.footer.shimmerContainerNative
         Laynative = binding.Laynative
+        closeButton = binding.btnClose
     }
 
-    fun loadNativeMedium(
-        activity: Activity, admobNativeIds: String, status: Boolean
+    fun loadNativeFullScreen(
+        activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (context.isNetworkConnected()) {
             when {
                 status -> {
-                    Tools.hideNavigationBar(activity)
                     val adLoader =
                         AdLoader.Builder(activity, admobNativeIds).forNativeAd { nativeAd ->
                             val styles = NativeTemplateStyle.Builder().build()
@@ -57,6 +65,7 @@ class NativeMedium @JvmOverloads constructor(
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                                 Laynative.visibility = View.GONE
                                 NativeShimmer.visibility = View.GONE
+                                NativeShimmer.stopShimmer()
                                 super.onAdFailedToLoad(loadAdError)
                                 adscallback?.onFailedToLoad(loadAdError)
                             }
@@ -95,7 +104,6 @@ class NativeMedium @JvmOverloads constructor(
                 }
 
                 else -> {
-                    Tools.showNavigationBar(activity)
                     Laynative.visibility = View.GONE
                 }
             }
@@ -103,21 +111,20 @@ class NativeMedium @JvmOverloads constructor(
             Laynative.visibility = View.GONE
         }
     }
+
     /**
-     * Show a native ad instantly from the preload pool ([NativeAdPreloader]).
+     * Show the full-screen native ad instantly from the preload pool ([NativeAdPreloader]).
      * If a preloaded ad is ready it is bound immediately (no shimmer wait); otherwise
      * it falls back to a normal fresh load. Either way a fresh ad is preloaded for the
-     * next screen so it stays "on-demand fast".
+     * next time so it stays "on-demand fast".
      */
     fun showNativeAd(
-        activity: Activity, admobNativeIds: String, status: Boolean
+        activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (!status || !context.isNetworkConnected()) {
-            Tools.showNavigationBar(activity)
             Laynative.visibility = View.GONE
             return
         }
-        Tools.hideNavigationBar(activity)
         val preloaded = NativeAdPreloader.poll(admobNativeIds)
         if (preloaded != null) {
             val styles = NativeTemplateStyle.Builder().build()
@@ -130,21 +137,31 @@ class NativeMedium @JvmOverloads constructor(
             adscallback?.onAdShownFromCache()
             adscallback?.onAdLoaded()
         } else {
-            loadNativeMedium(activity, admobNativeIds, status)
+            loadNativeFullScreen(activity, admobNativeIds, status)
         }
-        // Keep the pool warm for the next screen.
+        // Keep the pool warm for the next time.
         NativeAdPreloader.preload(activity, admobNativeIds, true)
     }
 
-    fun  nativeAdsCallback(callback: AdsCallBack?) {
+    fun nativeAdsCallback(callback: AdsCallBack?) {
         adscallback = callback
+    }
+
+    /** React to the built-in close button (e.g. finish the hosting Activity). */
+    fun setOnCloseClickListener(listener: OnClickListener?) {
+        closeButton.setOnClickListener(listener)
+    }
+
+    /** Show or hide the built-in close button. */
+    fun setCloseButtonVisible(visible: Boolean) {
+        closeButton.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     // Lifecycle management for the native ad view
     fun onResume() {
         NativeShimmer.startShimmer()
-
     }
+
     fun onPause() {
         NativeShimmer.stopShimmer()
     }
@@ -152,8 +169,5 @@ class NativeMedium @JvmOverloads constructor(
     fun onDestroy() {
         NativeShimmer.stopShimmer()
         nativetemplate.destroyNativeAd()
-    }
-    fun destroyNative(){
-        nativetemplate.nativeAd?.destroy()
     }
 }

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.gms.ads.nativead.NativeAdView
+        android:id="@+id/native_ad_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="12dp">
+
+            <!-- ===== Header: "Ad" badge + advertiser (e.g. youtube.com) ===== -->
+            <TextView
+                android:id="@+id/ad_notification_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_ad_badge_orange"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="1dp"
+                android:text="AD"
+                android:textColor="@color/white_color"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="6dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="@+id/ad_notification_view"
+                app:layout_constraintStart_toEndOf="@+id/ad_notification_view"
+                app:layout_constraintTop_toTopOf="@+id/ad_notification_view" />
+
+            <TextView
+                android:id="@+id/secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="youtube.com"
+                android:textColor="@color/gray"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ad_notification_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icon"
+                app:layout_constraintTop_toTopOf="@+id/ad_notification_view" />
+
+            <!-- ===== Content: media on the left, headline + body on the right ===== -->
+            <com.google.android.gms.ads.nativead.MediaView
+                android:id="@+id/media_view"
+                android:layout_width="74dp"
+                android:layout_height="74dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_native_custom_media"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ad_notification_view" />
+
+            <TextView
+                android:id="@+id/primary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="Test Ad :"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/media_view"
+                app:layout_constraintTop_toTopOf="@+id/media_view" />
+
+            <TextView
+                android:id="@+id/body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="let mi fremix Anita Brightfly"
+                android:textColor="@color/gray"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/media_view"
+                app:layout_constraintTop_toBottomOf="@+id/primary" />
+
+            <RatingBar
+                android:id="@+id/rating_bar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
+                android:numStars="5"
+                android:stepSize="0.1"
+                android:theme="@style/RatingBar"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/media_view"
+                app:layout_constraintTop_toBottomOf="@+id/body" />
+
+            <!-- Sits below whichever is taller: the media or the text block -->
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/content_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="media_view,body,rating_bar" />
+
+            <!-- ===== Full-width "Learn more" CTA ===== -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cta"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_native_custom_cta"
+                android:gravity="center"
+                android:lines="1"
+                android:text="Learn more"
+                android:textAllCaps="false"
+                android:textColor="@color/white_color"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/content_barrier" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.gms.ads.nativead.NativeAdView>
+</merge>

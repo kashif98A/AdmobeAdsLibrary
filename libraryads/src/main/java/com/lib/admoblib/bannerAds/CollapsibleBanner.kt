@@ -66,7 +66,6 @@ class CollapsibleBanner @JvmOverloads constructor(
 
                 adView?.adUnitId = bannerId
                 adView?.setAdSize(getAdSize(context, adContainerView!!))
-                adView?.loadAd(adRequest)
 
                 adView?.adListener = object : AdListener() {
                     override fun onAdLoaded() {
@@ -80,7 +79,29 @@ class CollapsibleBanner @JvmOverloads constructor(
                         footer?.visibility = View.GONE
                         adscallback?.onFailedToLoad(loadAdError)
                     }
+
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                        adscallback?.onAdImpression()
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        adscallback?.onAdClicked()
+                    }
+
+                    override fun onAdOpened() {
+                        super.onAdOpened()
+                        adscallback?.onAdOpened()
+                    }
+
+                    override fun onAdClosed() {
+                        super.onAdClosed()
+                        adscallback?.onAdClosed()
+                    }
                 }
+                adscallback?.onAdLoading()
+                adView?.loadAd(adRequest)
 
                 val adContainerParams = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -122,6 +143,41 @@ class CollapsibleBanner @JvmOverloads constructor(
     fun destroyAdView() {
         adView?.destroy()
         adView = null
+    }
+
+    /**
+     * Show a collapsible banner instantly from the preload pool ([BannerAdPreloader]).
+     * If a preloaded banner is ready it is attached immediately (no shimmer wait);
+     * otherwise it falls back to a normal fresh load. Either way a fresh banner is
+     * preloaded for the next screen so it stays "on-demand fast".
+     */
+    fun showBanner(context: Activity, bannerId: String, status: Boolean) {
+        if (!status || !context.isNetworkConnected()) {
+            laybanner?.visibility = View.GONE
+            Tools.showNavigationBar(context)
+            return
+        }
+        val preloaded = BannerAdPreloader.poll(bannerId)
+        if (preloaded != null) {
+            Tools.hideNavigationBar(context)
+            adView = preloaded
+            adContainerView?.visibility = View.VISIBLE
+            adContainerView?.removeAllViews()
+            val adContainerParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+            )
+            adContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+            adContainerView?.addView(preloaded, adContainerParams)
+            footer?.visibility = View.GONE
+            footer?.stopShimmer()
+            adscallback?.onAdShownFromCache()
+            adscallback?.onAdLoaded()
+        } else {
+            loadCollapsibleBanner(context, bannerId, status)
+        }
+        // Keep the pool warm for the next screen.
+        BannerAdPreloader.preload(context, bannerId, collapsible = true)
     }
 
     fun bannerAdsCallback(callback: AdsCallBack?) {

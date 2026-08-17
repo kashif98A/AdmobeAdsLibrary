@@ -10,6 +10,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.R
 
 class LoadAdsActivity : AppCompatActivity() {
@@ -25,17 +26,21 @@ class LoadAdsActivity : AppCompatActivity() {
         nextClassNameInString = intent.getStringExtra(ConstantAds.nextClassName)
         interstitialId = intent.getStringExtra(ConstantAds.interstitialid)
 
+        adsCallBack?.onAdLoading()
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(this, interstitialId!!, adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 mInterstitialAd = interstitialAd
                 Log.i(TAG, "onAdLoaded")
+                adsCallBack?.onAdLoaded()
                 showInterstitialAd()
             }
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 Log.d(TAG, loadAdError.toString())
                 mInterstitialAd = null
+                adsCallBack?.onFailedToLoad(loadAdError)
+                adsCallBack = null // release to avoid leaking a captured Activity
                 try {
                     nextActivity(nextClassNameInString!!)
                 } catch (e: ClassNotFoundException) {
@@ -51,11 +56,14 @@ class LoadAdsActivity : AppCompatActivity() {
             ad.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdClicked() {
                     Log.d(TAG, "Ad was clicked.")
+                    adsCallBack?.onAdClicked()
                 }
 
                 override fun onAdDismissedFullScreenContent() {
                     Log.d(TAG, "Ad dismissed fullscreen content.")
                     mInterstitialAd = null
+                    adsCallBack?.onAdClosed()
+                    adsCallBack = null // release to avoid leaking a captured Activity
                     try {
                         nextActivity(nextClassNameInString!!)
                         finish()
@@ -68,6 +76,8 @@ class LoadAdsActivity : AppCompatActivity() {
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                     Log.e(TAG, "Ad failed to show fullscreen content.")
                     mInterstitialAd = null
+                    adsCallBack?.onFailedToLoad(adError)
+                    adsCallBack = null // release to avoid leaking a captured Activity
                     try {
                         nextActivity(nextClassNameInString!!)
                     } catch (e: ClassNotFoundException) {
@@ -78,10 +88,12 @@ class LoadAdsActivity : AppCompatActivity() {
 
                 override fun onAdImpression() {
                     Log.d(TAG, "Ad recorded an impression.")
+                    adsCallBack?.onAdImpression()
                 }
 
                 override fun onAdShowedFullScreenContent() {
                     Log.d(TAG, "Ad showed fullscreen content.")
+                    adsCallBack?.onAdOpened()
                 }
             }
             ad.show(this@LoadAdsActivity)
@@ -112,5 +124,11 @@ class LoadAdsActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "LoadAdsActivity"
+
+        /**
+         * Optional lifecycle callback for the interstitial shown by this activity.
+         * Set it (e.g. via [InterAds.startLoadAdActivity]) before launching the activity.
+         */
+        var adsCallBack: AdsCallBack? = null
     }
 }

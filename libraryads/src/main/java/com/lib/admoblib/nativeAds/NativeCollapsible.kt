@@ -11,49 +11,70 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.lib.admoblib.AdsCallBack
-import com.lib.admoblib.databinding.NativeLayoutBinding
-
+import com.lib.admoblib.databinding.CollapsibleNativeLayoutBinding
 import com.lib.admoblib.isNetworkConnected
 
-
-class NativeLarge @JvmOverloads constructor(
+/**
+ * A custom, collapsible native ad card:
+ *  - Expanded: a chevron + a large media area on top, then icon + headline + body +
+ *    "Ad" badge, and a full-width gradient "Install" call-to-action at the bottom.
+ *  - Tapping the chevron collapses the media area and hides the chevron, leaving the
+ *    compact icon + text + Install card.
+ *
+ * Usage:
+ *   binding.nativeCollapsible.loadNativeCollapsible(this, getString(R.string.NativeMain), true)
+ *   // or instant, from the preload pool:
+ *   binding.nativeCollapsible.showNativeAd(this, getString(R.string.NativeMain), true)
+ */
+class NativeCollapsible @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    lateinit var binding: NativeLayoutBinding
-    private lateinit var nativetemplate: TemplateView
+
+    lateinit var binding: CollapsibleNativeLayoutBinding
+    private lateinit var nativeAdView: NativeAdView
     private lateinit var NativeShimmer: ShimmerFrameLayout
     private lateinit var Laynative: RelativeLayout
+    private var nativeAd: NativeAd? = null
+    private var mediaExpanded = true
     var adscallback: AdsCallBack? = null
+
     init {
         initAdmob()
     }
 
     private fun initAdmob() {
         val inflater = LayoutInflater.from(context)
-        binding = NativeLayoutBinding.inflate(inflater, this, true)
-        nativetemplate = binding.myTemplate
+        binding = CollapsibleNativeLayoutBinding.inflate(inflater, this, true)
+        nativeAdView = binding.nativeAdView
         NativeShimmer = binding.footer.shimmerContainerNative
         Laynative = binding.Laynative
+
+        // Chevron toggles the media area (expand / collapse with animation).
+        binding.btnCollapse.setOnClickListener { toggleMedia() }
     }
 
-    fun loadNativeLarge(
+    fun loadNativeCollapsible(
         activity: Context, admobNativeIds: String, status: Boolean
     ) {
         if (context.isNetworkConnected()) {
             when {
                 status -> {
-                    val adLoader =
-                        AdLoader.Builder(activity, admobNativeIds).forNativeAd { nativeAd ->
-                            val styles = NativeTemplateStyle.Builder().build()
-                            nativetemplate.setStyles(styles)
-                            nativetemplate.setNativeAd(nativeAd)
-                            NativeShimmer.visibility = View.GONE
-                            NativeShimmer.stopShimmer()
-                        }.withAdListener(object : AdListener() {
+                    // Keep AdChoices out of the chevron's corner.
+                    val adOptions = NativeAdOptions.Builder()
+                        .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_LEFT)
+                        .build()
+                    val adLoader = AdLoader.Builder(activity, admobNativeIds)
+                        .forNativeAd { ad -> bindNativeAd(ad) }
+                        .withNativeAdOptions(adOptions)
+                        .withAdListener(object : AdListener() {
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                                 Laynative.visibility = View.GONE
                                 NativeShimmer.visibility = View.GONE
+                                NativeShimmer.stopShimmer()
                                 super.onAdFailedToLoad(loadAdError)
                                 adscallback?.onFailedToLoad(loadAdError)
                             }
@@ -61,7 +82,8 @@ class NativeLarge @JvmOverloads constructor(
                             override fun onAdLoaded() {
                                 Laynative.visibility = View.VISIBLE
                                 NativeShimmer.visibility = View.GONE
-                                nativetemplate.visibility = View.VISIBLE
+                                NativeShimmer.stopShimmer()
+                                nativeAdView.visibility = View.VISIBLE
                                 super.onAdLoaded()
                                 adscallback?.onAdLoaded()
                             }
@@ -85,7 +107,8 @@ class NativeLarge @JvmOverloads constructor(
                                 super.onAdClosed()
                                 adscallback?.onAdClosed()
                             }
-                        }).build()
+                        })
+                        .build()
 
                     adscallback?.onAdLoading()
                     adLoader.loadAd(AdRequest.Builder().build())
@@ -99,11 +122,10 @@ class NativeLarge @JvmOverloads constructor(
             Laynative.visibility = View.GONE
         }
     }
+
     /**
      * Show a native ad instantly from the preload pool ([NativeAdPreloader]).
-     * If a preloaded ad is ready it is bound immediately (no shimmer wait); otherwise
-     * it falls back to a normal fresh load. Either way a fresh ad is preloaded for the
-     * next screen so it stays "on-demand fast".
+     * Falls back to a fresh load if nothing is preloaded, and warms the pool for next time.
      */
     fun showNativeAd(
         activity: Context, admobNativeIds: String, status: Boolean
@@ -114,36 +136,75 @@ class NativeLarge @JvmOverloads constructor(
         }
         val preloaded = NativeAdPreloader.poll(admobNativeIds)
         if (preloaded != null) {
-            val styles = NativeTemplateStyle.Builder().build()
-            nativetemplate.setStyles(styles)
-            nativetemplate.setNativeAd(preloaded)
+            bindNativeAd(preloaded)
             NativeShimmer.visibility = View.GONE
             NativeShimmer.stopShimmer()
-            nativetemplate.visibility = View.VISIBLE
+            nativeAdView.visibility = View.VISIBLE
             Laynative.visibility = View.VISIBLE
             adscallback?.onAdShownFromCache()
             adscallback?.onAdLoaded()
         } else {
-            loadNativeLarge(activity, admobNativeIds, status)
+            loadNativeCollapsible(activity, admobNativeIds, status)
         }
-        // Keep the pool warm for the next screen.
         NativeAdPreloader.preload(activity, admobNativeIds, true)
     }
 
-    fun  nativeAdsCallback(callback: AdsCallBack?) {
+    private fun bindNativeAd(ad: NativeAd) {
+        // Release any previously bound ad.
+        nativeAd?.takeIf { it !== ad }?.destroy()
+        nativeAd = ad
+
+        nativeAdView.mediaView = binding.mediaView
+        nativeAdView.headlineView = binding.headline
+        nativeAdView.bodyView = binding.body
+        nativeAdView.iconView = binding.icon
+        nativeAdView.callToActionView = binding.cta
+
+        binding.headline.text = ad.headline
+        val body = ad.body
+        if (body.isNullOrEmpty()) {
+            binding.body.visibility = View.GONE
+        } else {
+            binding.body.visibility = View.VISIBLE
+            binding.body.text = body
+        }
+        ad.callToAction?.let { binding.cta.text = it }
+
+        val icon = ad.icon
+        if (icon != null) {
+            binding.icon.setImageDrawable(icon.drawable)
+            binding.icon.visibility = View.VISIBLE
+        } else {
+            binding.icon.visibility = View.GONE
+        }
+
+        nativeAdView.setNativeAd(ad)
+    }
+
+    private fun toggleMedia() {
+        // Collapse hides the media area AND the chevron, leaving the compact
+        // icon + text + Install card (matches the anchored/collapsed look).
+        mediaExpanded = !mediaExpanded
+        binding.mediaCard.visibility = if (mediaExpanded) View.VISIBLE else View.GONE
+        binding.btnCollapse.visibility = if (mediaExpanded) View.VISIBLE else View.GONE
+    }
+
+    fun nativeAdsCallback(callback: AdsCallBack?) {
         adscallback = callback
     }
 
-    // Lifecycle management for the native ad view
+    // Lifecycle
     fun onResume() {
         NativeShimmer.startShimmer()
     }
+
     fun onPause() {
         NativeShimmer.stopShimmer()
     }
 
     fun onDestroy() {
         NativeShimmer.stopShimmer()
-        nativetemplate.destroyNativeAd()  // Destroying the native ad to release resources
+        nativeAd?.destroy()
+        nativeAd = null
     }
 }

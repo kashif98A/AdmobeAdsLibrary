@@ -51,7 +51,6 @@ class AdaptiveBanner @JvmOverloads constructor(
                 val adSize: AdSize = getAdSize(activity, adContainerView!!)
                 adView?.setAdSize(adSize)
                 val adRequest: AdRequest = AdRequest.Builder().build()
-                adView?.loadAd(adRequest)
                 adView?.adListener = object : AdListener() {
                     override fun onAdLoaded() {
                         super.onAdLoaded()
@@ -67,7 +66,29 @@ class AdaptiveBanner @JvmOverloads constructor(
                         adContainerView?.visibility = View.GONE
                         adscallback?.onFailedToLoad(loadAdError)
                     }
+
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                        adscallback?.onAdImpression()
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        adscallback?.onAdClicked()
+                    }
+
+                    override fun onAdOpened() {
+                        super.onAdOpened()
+                        adscallback?.onAdOpened()
+                    }
+
+                    override fun onAdClosed() {
+                        super.onAdClosed()
+                        adscallback?.onAdClosed()
+                    }
                 }
+                adscallback?.onAdLoading()
+                adView?.loadAd(adRequest)
             }     else -> {
                 laybanner?.visibility = View.GONE
                 Tools.showNavigationBar(activity)
@@ -91,6 +112,37 @@ class AdaptiveBanner @JvmOverloads constructor(
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth)
     }
 
+
+    /**
+     * Show an adaptive banner instantly from the preload pool ([BannerAdPreloader]).
+     * If a preloaded banner is ready it is attached immediately (no shimmer wait);
+     * otherwise it falls back to a normal fresh load. Either way a fresh banner is
+     * preloaded for the next screen so it stays "on-demand fast".
+     */
+    fun showBanner(activity: Activity, bannerId: String, status: Boolean) {
+        if (!status || !context.isNetworkConnected()) {
+            laybanner?.visibility = View.GONE
+            Tools.showNavigationBar(activity)
+            return
+        }
+        val preloaded = BannerAdPreloader.poll(bannerId)
+        if (preloaded != null) {
+            Tools.hideNavigationBar(activity)
+            adView = preloaded
+            adContainerView?.removeAllViews()
+            adContainerView?.addView(preloaded)
+            footer?.visibility = View.GONE
+            footer?.stopShimmer()
+            adContainerView?.visibility = View.VISIBLE
+            laybanner?.visibility = View.VISIBLE
+            adscallback?.onAdShownFromCache()
+            adscallback?.onAdLoaded()
+        } else {
+            loadAdaptiveBanner(activity, bannerId, status)
+        }
+        // Keep the pool warm for the next screen.
+        BannerAdPreloader.preload(activity, bannerId)
+    }
 
     fun  bannerAdsCallback(callback: AdsCallBack?) {
         adscallback = callback

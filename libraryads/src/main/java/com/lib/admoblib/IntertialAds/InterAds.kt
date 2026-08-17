@@ -3,18 +3,25 @@ package com.lib.admoblib.IntertialAds
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.lib.admoblib.AdsCallBack
 import com.lib.admoblib.isNetworkConnected
 
 
 object InterAds {
+    @JvmStatic
+    @JvmOverloads
     fun startLoadAdActivity(
         context: Context,
         nextClassName: String?,
         intertialAdsIds: String?,
         value: String?,
         KeyTwo: Int,
-        status: Boolean
+        status: Boolean,
+        callback: AdsCallBack? = null
     ) {
+        // Report interstitial lifecycle events (onAdLoading/onAdLoaded/onFailedToLoad/
+        // onAdImpression/onAdClicked/onAdOpened/onAdClosed) through this callback.
+        LoadAdsActivity.adsCallBack = callback
         if (context.isNetworkConnected()) {
             when {
                 status -> {
