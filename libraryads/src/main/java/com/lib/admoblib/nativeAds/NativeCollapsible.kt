@@ -53,6 +53,13 @@ class NativeCollapsible @JvmOverloads constructor(
         NativeShimmer = binding.footer.shimmerContainerNative
         Laynative = binding.Laynative
 
+        // While loading, show only the shimmer placeholder (sized like a medium native
+        // ad). The real ad content stays hidden until onAdLoaded, so no placeholder
+        // media/text flashes behind the shimmer.
+        nativeAdView.visibility = View.GONE
+        NativeShimmer.visibility = View.VISIBLE
+        NativeShimmer.startShimmer()
+
         // Chevron toggles the media area (expand / collapse with animation).
         binding.btnCollapse.setOnClickListener { toggleMedia() }
     }
@@ -63,6 +70,11 @@ class NativeCollapsible @JvmOverloads constructor(
         if (context.isNetworkConnected()) {
             when {
                 status -> {
+                    // Show the shimmer while the ad loads; reveal the ad only on success.
+                    Laynative.visibility = View.VISIBLE
+                    nativeAdView.visibility = View.GONE
+                    NativeShimmer.visibility = View.VISIBLE
+                    NativeShimmer.startShimmer()
                     // Keep AdChoices out of the chevron's corner.
                     val adOptions = NativeAdOptions.Builder()
                         .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_LEFT)

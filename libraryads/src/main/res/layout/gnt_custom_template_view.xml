@@ -15,7 +15,7 @@
             android:background="@color/white"
             android:padding="12dp">
 
-            <!-- ===== Header: "Ad" badge + advertiser (e.g. youtube.com) ===== -->
+            <!-- ===== Header: "Ad" badge + advertiser (no icon; media shows on the left) ===== -->
             <TextView
                 android:id="@+id/ad_notification_view"
                 android:layout_width="wrap_content"
@@ -30,17 +30,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="6dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="@+id/ad_notification_view"
-                app:layout_constraintStart_toEndOf="@+id/ad_notification_view"
-                app:layout_constraintTop_toTopOf="@+id/ad_notification_view" />
-
             <TextView
                 android:id="@+id/secondary"
                 android:layout_width="0dp"
@@ -48,12 +37,12 @@
                 android:layout_marginStart="6dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="youtube.com"
+                android:text="Test Advertiser"
                 android:textColor="@color/gray"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/ad_notification_view"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/icon"
+                app:layout_constraintStart_toEndOf="@+id/ad_notification_view"
                 app:layout_constraintTop_toTopOf="@+id/ad_notification_view" />
 
             <!-- ===== Content: media on the left, headline + body on the right ===== -->
@@ -89,7 +78,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="let mi fremix Anita Brightfly"
+                android:text="This is a sample test ad body text."
                 android:textColor="@color/gray"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"

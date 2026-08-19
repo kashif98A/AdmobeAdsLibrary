@@ -47,7 +47,7 @@
                     android:layout_marginHorizontal="4dp"
                     android:layout_marginTop="2dp"
                     android:background="@drawable/bg_collapsible_media_card"
-                    android:padding="16dp">
+                    android:padding="6dp">
 
                     <com.google.android.gms.ads.nativead.MediaView
                         android:id="@+id/media_view"
@@ -84,7 +84,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:lines="1"
-                            android:text="Shopify: Sell online/in person"
+                            android:text="Test Ad Headline"
                             android:textColor="#E91E63"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -95,7 +95,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:maxLines="2"
-                            android:text="Run your business wherever you are."
+                            android:text="This is a sample test ad body text."
                             android:textColor="@color/gray"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -133,6 +133,6 @@
 
         <include
             android:id="@+id/footer"
-            layout="@layout/load_fb_native_collapsible" />
+            layout="@layout/load_fb_native_small" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

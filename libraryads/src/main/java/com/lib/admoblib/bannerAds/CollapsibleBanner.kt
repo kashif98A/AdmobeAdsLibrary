@@ -44,6 +44,9 @@ class CollapsibleBanner @JvmOverloads constructor(
         adContainerView = binding.adContainerView
         footer = binding.footer.shimmerContainerBanner
         laybanner = binding.laybanner
+        // Keep the banner completely hidden until an ad has actually loaded, so we
+        // never flash an empty container or a loading placeholder before the ad is ready.
+        laybanner?.visibility = View.GONE
     }
 
     fun loadCollapsibleBanner(
@@ -55,7 +58,9 @@ class CollapsibleBanner @JvmOverloads constructor(
             if (status) {
                 Tools.hideNavigationBar(context)
                 adView = AdView(context)
-                adContainerView?.visibility = View.VISIBLE
+                // Stay hidden while the ad is loading; the container is only revealed
+                // once onAdLoaded fires. This avoids an empty/blank banner space.
+                laybanner?.visibility = View.GONE
                 adContainerView?.removeAllViews()
 
                 val extras = Bundle()
@@ -70,13 +75,20 @@ class CollapsibleBanner @JvmOverloads constructor(
                 adView?.adListener = object : AdListener() {
                     override fun onAdLoaded() {
                         super.onAdLoaded()
+                        // Ad loaded successfully — hide the shimmer and reveal the banner now.
+                        footer?.stopShimmer()
                         footer?.visibility = View.GONE
+                        adContainerView?.visibility = View.VISIBLE
+                        laybanner?.visibility = View.VISIBLE
                         adscallback?.onAdLoaded()
                     }
 
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         super.onAdFailedToLoad(loadAdError)
+                        // Load failed — keep the banner hidden, never show an empty container.
+                        footer?.stopShimmer()
                         footer?.visibility = View.GONE
+                        laybanner?.visibility = View.GONE
                         adscallback?.onFailedToLoad(loadAdError)
                     }
 
@@ -161,7 +173,6 @@ class CollapsibleBanner @JvmOverloads constructor(
         if (preloaded != null) {
             Tools.hideNavigationBar(context)
             adView = preloaded
-            adContainerView?.visibility = View.VISIBLE
             adContainerView?.removeAllViews()
             val adContainerParams = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -169,8 +180,11 @@ class CollapsibleBanner @JvmOverloads constructor(
             )
             adContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
             adContainerView?.addView(preloaded, adContainerParams)
-            footer?.visibility = View.GONE
             footer?.stopShimmer()
+            footer?.visibility = View.GONE
+            // Preloaded ad is already loaded — reveal the banner immediately.
+            adContainerView?.visibility = View.VISIBLE
+            laybanner?.visibility = View.VISIBLE
             adscallback?.onAdShownFromCache()
             adscallback?.onAdLoaded()
         } else {

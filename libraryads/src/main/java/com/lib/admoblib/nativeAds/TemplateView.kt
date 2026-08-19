@@ -198,11 +198,13 @@ class TemplateView : FrameLayout {
             secondaryView!!.visibility = View.VISIBLE
             ratingBar?.setVisibility(View.GONE)
         }
+        // iconView is optional: some templates (e.g. the custom one) omit the icon
+        // entirely, so guard against a null view instead of asserting.
         if (icon != null) {
-            iconView!!.setVisibility(View.VISIBLE)
-            iconView!!.setImageDrawable(icon.drawable)
+            iconView?.setVisibility(View.VISIBLE)
+            iconView?.setImageDrawable(icon.drawable)
         } else {
-            iconView!!.setVisibility(View.GONE)
+            iconView?.setVisibility(View.GONE)
         }
         if (tertiaryView != null) {
             tertiaryView!!.text = body

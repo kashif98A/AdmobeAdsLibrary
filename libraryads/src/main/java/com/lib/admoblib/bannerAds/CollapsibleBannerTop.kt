@@ -44,6 +44,9 @@ class CollapsibleBannerTop @JvmOverloads constructor(
         adContainerView = binding.adContainerView
         footer = binding.footer.shimmerContainerBanner
         laybanner = binding.laybanner
+        // Keep the banner completely hidden until an ad has actually loaded, so we
+        // never flash an empty container or a loading placeholder before the ad is ready.
+        laybanner?.visibility = View.GONE
     }
 
     fun loadCollapsibleBanner(
@@ -55,7 +58,9 @@ class CollapsibleBannerTop @JvmOverloads constructor(
             if (status) {
                 Tools.hideNavigationBar(context)
                 adView = AdView(context)
-                adContainerView?.visibility = View.VISIBLE
+                // Stay hidden while the ad is loading; the container is only revealed
+                // once onAdLoaded fires. This avoids an empty/blank banner space.
+                laybanner?.visibility = View.GONE
                 adContainerView?.removeAllViews()
 
                 val extras = Bundle()
@@ -66,21 +71,29 @@ class CollapsibleBannerTop @JvmOverloads constructor(
 
                 adView?.adUnitId = bannerId
                 adView?.setAdSize(getAdSize(context, adContainerView!!))
-                adView?.loadAd(adRequest)
 
                 adView?.adListener = object : AdListener() {
                     override fun onAdLoaded() {
                         super.onAdLoaded()
+                        // Ad loaded successfully — hide the shimmer and reveal the banner now.
+                        footer?.stopShimmer()
                         footer?.visibility = View.GONE
+                        adContainerView?.visibility = View.VISIBLE
+                        laybanner?.visibility = View.VISIBLE
                         adscallback?.onAdLoaded()
                     }
 
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         super.onAdFailedToLoad(loadAdError)
+                        // Load failed — keep the banner hidden, never show an empty container.
+                        footer?.stopShimmer()
                         footer?.visibility = View.GONE
+                        laybanner?.visibility = View.GONE
                         adscallback?.onFailedToLoad(loadAdError)
                     }
                 }
+                adscallback?.onAdLoading()
+                adView?.loadAd(adRequest)
 
                 val adContainerParams = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
