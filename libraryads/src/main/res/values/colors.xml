@@ -19,4 +19,6 @@
     <color name="gnt_test_background_color">#00F4F4F4</color>
     <color name="lightTransparent">#16000000</color>
     <color name="progress_bar_bg_light">#ff787878</color>
+    <!-- App brand color (launcher icon green) — used for the native Install CTA -->
+    <color name="native_cta_color">#3DDC84</color>
 </resources>

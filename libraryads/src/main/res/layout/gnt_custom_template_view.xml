@@ -15,19 +15,43 @@
             android:background="@color/white"
             android:padding="12dp">
 
-            <!-- ===== Header: "Ad" badge + advertiser (no icon; media shows on the left) ===== -->
+            <!-- ===== Media: full-height block on the left ===== -->
+            <FrameLayout
+                android:id="@+id/media_container"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:background="@drawable/bg_native_custom_media"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_media_placeholder" />
+
+                <com.google.android.gms.ads.nativead.MediaView
+                    android:id="@+id/media_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </FrameLayout>
+
+            <!-- ===== Right column: badge + advertiser ===== -->
             <TextView
                 android:id="@+id/ad_notification_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_ad_badge_orange"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/bg_ad_badge_blue"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="1dp"
                 android:text="AD"
-                android:textColor="@color/white_color"
+                android:textColor="#1A73E8"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/media_container"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -45,21 +69,13 @@
                 app:layout_constraintStart_toEndOf="@+id/ad_notification_view"
                 app:layout_constraintTop_toTopOf="@+id/ad_notification_view" />
 
-            <!-- ===== Content: media on the left, headline + body on the right ===== -->
-            <com.google.android.gms.ads.nativead.MediaView
-                android:id="@+id/media_view"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_native_custom_media"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ad_notification_view" />
-
+            <!-- ===== Right column: headline + body ===== -->
             <TextView
                 android:id="@+id/primary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:text="Test Ad :"
@@ -67,8 +83,8 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/media_view"
-                app:layout_constraintTop_toTopOf="@+id/media_view" />
+                app:layout_constraintStart_toEndOf="@+id/media_container"
+                app:layout_constraintTop_toBottomOf="@+id/ad_notification_view" />
 
             <TextView
                 android:id="@+id/body"
@@ -82,7 +98,7 @@
                 android:textColor="@color/gray"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/media_view"
+                app:layout_constraintStart_toEndOf="@+id/media_container"
                 app:layout_constraintTop_toBottomOf="@+id/primary" />
 
             <RatingBar
@@ -96,33 +112,35 @@
                 android:stepSize="0.1"
                 android:theme="@style/RatingBar"
                 android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/media_view"
+                app:layout_constraintStart_toEndOf="@+id/media_container"
                 app:layout_constraintTop_toBottomOf="@+id/body" />
 
-            <!-- Sits below whichever is taller: the media or the text block -->
+            <!-- Bottom of the right-column text block (media height follows the CTA) -->
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/content_barrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="media_view,body,rating_bar" />
+                app:constraint_referenced_ids="body,rating_bar" />
 
-            <!-- ===== Full-width "Learn more" CTA ===== -->
+            <!-- ===== Install CTA: right of the media, app-colored ===== -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/cta"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="44dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_native_custom_cta"
                 android:gravity="center"
                 android:lines="1"
-                android:text="Learn more"
+                android:minWidth="0dp"
+                android:text="Install"
                 android:textAllCaps="false"
                 android:textColor="@color/white_color"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/media_container"
                 app:layout_constraintTop_toBottomOf="@+id/content_barrier" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.gms.ads.nativead.NativeAdView>

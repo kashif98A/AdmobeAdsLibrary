@@ -22,33 +22,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="6dp">
 
                 <!-- Chevron (top-right) -->
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+<!--                <FrameLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content">-->
 
-                    <ImageView
-                        android:id="@+id/btn_collapse"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_gravity="end"
-                        android:contentDescription="Collapse ad"
-                        android:padding="2dp"
-                        android:src="@drawable/ic_collapse_chevron" />
-                </FrameLayout>
+<!--                    <ImageView-->
+<!--                        android:layout_width="26dp"-->
+<!--                        android:layout_height="26dp"-->
+<!--                        android:layout_gravity="end"-->
+<!--                        android:contentDescription="Collapse ad"-->
+<!--                        android:padding="2dp"-->
+<!--                        android:src="@drawable/ic_collapse_chevron" />-->
+<!--                </FrameLayout>-->
 
                 <!-- Collapsible media area -->
                 <FrameLayout
                     android:id="@+id/media_card"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
-                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginHorizontal="2dp"
                     android:layout_marginTop="2dp"
                     android:background="@drawable/bg_collapsible_media_card"
-                    android:padding="6dp">
-
+                    android:padding="4dp">
+                    <ImageView
+                        android:id="@+id/btn_collapse"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="end"
+                        android:elevation="2dp"
+                        android:contentDescription="@string/collapse_ad"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_collapse_chevron" />
                     <com.google.android.gms.ads.nativead.MediaView
                         android:id="@+id/media_view"
                         android:layout_width="match_parent"

@@ -7,4 +7,5 @@
     <string name="BannerGender">ca-app-pub-3940256099942544/2014213617</string>
     <string name="NativeMain">ca-app-pub-3940256099942544/2247696110</string>
     <string name="InterstitialSplash">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="collapse_ad">Collapse ad</string>
 </resources>
